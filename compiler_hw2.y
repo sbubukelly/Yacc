@@ -81,7 +81,7 @@ Program
 ;
 
 StatementList
-    : Statements Statement
+    : StatementList Statement
     | Statement
 ;
 
@@ -107,8 +107,8 @@ TypeName
 ;
 
 IncDecExpr
-    : Expression INC        { printf("INC\n"); }
-    | Expression DEC        { printf("DEC\n"); }
+    : Expr INC        { printf("INC\n"); }
+    | Expr DEC        { printf("DEC\n"); }
 ;
 
 Expr
