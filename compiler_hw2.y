@@ -101,7 +101,7 @@ Statement
 DeclarationStmt
     : VAR ID Type   {insert_symbol($<s_val>2, $<s_val>3, "-"); }
     // | VAR ID Type '=' Expr  {insert_symbol($<s_val>2, $<s_val>3, "-");}
-    | VAR ID ArrayType    {insert_symbol($<s_val>2, "array",  $<s_val>3);} 
+    // | VAR ID ArrayType    {insert_symbol($<s_val>2, "array",  $<s_val>3);} 
     // | VAR ID ArrayType '=' Expr   {insert_symbol($<s_val>2, "array",  $<s_val>3);} 
 ;
 
@@ -110,9 +110,9 @@ DeclarationStmt
 Type
     : TypeName 
 ;
-ArrayType
-    : '[' Literal ']' Type       { $$ = $<s_val>4;} 
-;
+// ArrayType
+//     : '[' Literal ']' Type       { $$ = $<s_val>4;} 
+// ;
 
 TypeName
     : INT
@@ -130,7 +130,7 @@ Literal
     | FLOAT_LIT {
         printf("FLOAT_LIT %f\n", $<f_val>$);
     }
-    | '\"' STRING_LIT '\"'      { printf("STRING_LIT %s\n", $<s_val>2); $$ = "string"; }
+    //| '\"' STRING_LIT '\"'      { printf("STRING_LIT %s\n", $<s_val>2); $$ = "string"; }
 ;
 
 
