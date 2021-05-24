@@ -67,7 +67,7 @@
 %token <*s_val> ID
 
 /* Nonterminal with return, which need to sepcify type */
-%type <s_val> Type TypeName ArrayType 
+%type <s_val> Type TypeName ArrayType INT FLOAT STRING BOOL
 %type <s_val> Expr Expr2 Literal IncDecExpr Operand
 
 /* Yacc will start at this nonterminal */
@@ -89,11 +89,12 @@ Statement
     : DeclarationStmt NEWLINE           { isArray = 0; }
     | Expr NEWLINE 
     | IncDecExpr
+    | NEWLINE
     ;
 
 DeclarationStmt
     : VAR ID Type                   {insert_symbol($<s_val>2, $<s_val>3, "-");}
-    // | VAR ID Type '=' Expression    {insert_symbol($<s_val>2, $<s_val>3, "-"); }
+
 
 Type
     : TypeName
@@ -168,7 +169,7 @@ Operand
                         printf("error:%d: undefined: %s\n", yylineno+1, $<s_val>1);
                         $$ = "undefined"; }
             }
-    |Literal
+    |Literal    { $$ = $<s_val>1; isLIT = 1; }
 ;
 
 Literal
