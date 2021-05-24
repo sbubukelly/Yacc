@@ -76,6 +76,7 @@ newline		[\n]
 "if"        { return IF; }
 "else"      { }
 "for"       { return FOR; }
+
 "int32"     { return INT; }
 "float32"   { return FLOAT;}
 "string"    { return STRING; }
@@ -88,6 +89,8 @@ newline		[\n]
 {inumber}   { yylval.i_val = atoi(yytext);
                 return INT_LIT;
             }
+{fnumber}   { yylval.f_val = atof(yytext); 
+                return FLOAT_LIT; }
 
 {id}        { yylval.ctr.id_name = strdup(yytext);
                 return IDENT;

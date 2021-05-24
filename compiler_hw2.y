@@ -38,17 +38,18 @@
 %token INT FLOAT BOOL STRING 
 %token INC DEC GEQ LEQ EQL NEQ 
 %token ADD_ASSIGN SUB_ASSIGN MUL_ASSIGN QUO_ASSIGN REM_ASSIGN
-%token LAND LOR NEWLINE
+%token LAND LOR 
+%token NEWLINE
 %token PRINT PRINTLN
 %token IF ELSE FOR
 %token TRUE FALSE
 
 /* Token with return, which need to sepcify type */
-%token INT_LIT FLOAT_LIT STRING_LIT ID
+%token INT_LIT FLOAT_LIT STRING_LIT IDENT
 %type <i_val> INT_LIT
 %type <f_val> FLOAT_LIT
 %type <*s_val> STRING_LIT
-%type <*s_val> ID
+%type <*s_val> IDENT
 
 
 /* Nonterminal with return, which need to sepcify type */
