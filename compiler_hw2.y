@@ -93,7 +93,7 @@ Statement
     ;
 
 DeclarationStmt
-    : VAR ID Type                   {insert_symbol($<s_val>2, $<s_val>3, "-");}
+    : VAR ID Type                   {insert_symbol($<s_val>1, $<s_val>3, "-");}
 
 
 Type
