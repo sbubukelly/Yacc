@@ -67,7 +67,7 @@
 %token <*s_val> ID
 
 /* Nonterminal with return, which need to sepcify type */
-%type <s_val> Type TypeName ArrayType INT FLOAT STRING BOOL
+%type <s_val> Type TypeName ArrayType 
 %type <s_val> Expr Expr2 Literal IncDecExpr Operand
 
 /* Yacc will start at this nonterminal */
