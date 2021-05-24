@@ -100,9 +100,9 @@ Statement
 
 DeclarationStmt
     : VAR ID Type   {insert_symbol($<s_val>2, $<s_val>3, "-"); }
-    | VAR ID Type '=' Expr  {insert_symbol($<s_val>2, $<s_val>3, "-");}
+    // | VAR ID Type '=' Expr  {insert_symbol($<s_val>2, $<s_val>3, "-");}
     | VAR ID ArrayType    {insert_symbol($<s_val>2, "array",  $<s_val>3);} 
-    | VAR ID ArrayType '=' Expr   {insert_symbol($<s_val>2, "array",  $<s_val>3);} 
+    // | VAR ID ArrayType '=' Expr   {insert_symbol($<s_val>2, "array",  $<s_val>3);} 
 ;
 
 
