@@ -116,13 +116,13 @@ Expr
     : Expr '+' Expr2     {if (strcmp($<s_val>1, $<s_val>3) == 0) $$ = $<s_val>1;
                         else if (strcmp($<s_val>1, "undefined") != 0 && strcmp($<s_val>3, "undefined") != 0)
                         printf("error:%d: invalid operation: %s (mismatched types %s and %s)\n",yylineno, $<s_val>2, $<s_val>1, $<s_val>3);
-                        printf("ADD");
+                        printf("ADD\n");
                         isLIT = 1;
                         }
     | Expr '-' Expr2     {if (strcmp($<s_val>1, $<s_val>3) == 0) $$ = $<s_val>1;
                         else if (strcmp($<s_val>1, "undefined") != 0 && strcmp($<s_val>3, "undefined") != 0)
                         printf("error:%d: invalid operation: %s (mismatched types %s and %s)\n",yylineno, $<s_val>2, $<s_val>1, $<s_val>3);
-                        printf("SUB");
+                        printf("SUB\n");
                         isLIT = 1;
                         }   
     | Expr2                 
@@ -130,13 +130,13 @@ Expr
 
 Expr2
     : Expr2 '*' Operand        {
-                                printf("MUL");
+                                printf("MUL\n");
                                 if (strcmp($<s_val>1, $<s_val>3) == 0)
                                     $$ = $<s_val>1;
                                 isLIT = 1;
                             }
     | Expr2 '/' Operand      {
-                                printf("QUO");
+                                printf("QUO\n");
                                 if (strcmp($<s_val>1, $<s_val>3) == 0)
                                     $$ = $<s_val>1;
                                 isLIT = 1;
