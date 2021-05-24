@@ -77,29 +77,30 @@ newline		[\n]
 "else"      { }
 "for"       { return FOR; }
 
-"int32"     { return INT; }
-"float32"   { return FLOAT;}
-"string"    { return STRING; }
-"bool"      { return BOOL; }
+"int32"     { yylval.s_val = strdup(yytext); return INT; }
+"float32"   { yylval.s_val = strdup(yytext); return FLOAT;}
+"string"    { yylval.s_val = strdup(yytext); return STRING; }
+"bool"      { yylval.s_val = strdup(yytext); return BOOL; }
 "true"      { return TRUE;}
 "false"     { return FALSE;}
 "var"       { return VAR; }
-
 
 {inumber}   { yylval.i_val = atoi(yytext);
                 return INT_LIT;
             }
 {fnumber}   { yylval.f_val = atof(yytext); 
-                return FLOAT_LIT; }
-
+                return FLOAT_LIT;
+            }
 {id}        { yylval.s_val = strdup(yytext);
                 return ID;
             }
-[\n]        {;}
+
 <<EOF>>     { static int once = 0;
                 if (once++) {
                     yyterminate();
                 }
+                yylineno++;
+                return NEWLINE;
             }
 [ \t]+      {;}
 .           {;}
