@@ -89,7 +89,7 @@ Statement
     : DeclarationStmt SEMICOLON  NEWLINE           { isArray = 0; }
     | Expr SEMICOLON  NEWLINE 
     | IncDecExpr SEMICOLON  NEWLINE 
-    // | NEWLINE
+    | NEWLINE
 ;
 
 DeclarationStmt
