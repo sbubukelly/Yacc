@@ -67,7 +67,7 @@
 %token <*s_val> ID
 
 /* Nonterminal with return, which need to sepcify type */
-%type <s_val> Type TypeName INT FLOAT STRING BOOL 
+%type <s_val> Type TypeName INT FLOAT STRING BOOL SEMICOLON
 %type <s_val> Expr Expr2 Literal IncDecExpr Operand
 
 /* Yacc will start at this nonterminal */
@@ -86,14 +86,14 @@ StatementList
 ;
 
 Statement
-    : DeclarationStmt  NEWLINE           { isArray = 0; }
+    : DeclarationStmt NEWLINE           { isArray = 0; }
     | Expr NEWLINE 
-    | IncDecExpr
+    | IncDecExpr NEWLINE 
     | NEWLINE
 ;
 
 DeclarationStmt
-    : Type ID  SEMICOLON                  {insert_symbol($<s_val>2, $<s_val>1, "-");}
+    : Type ID SEMICOLON                  {insert_symbol($<s_val>2, $<s_val>1, "-");}
 ;
 
 Type

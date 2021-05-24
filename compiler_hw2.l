@@ -67,14 +67,14 @@ newline		[\n]
 "]"         { return ']'; }
 "{"         { return '{'; }
 "}"         { return '}'; }
-";"         { return ';'; }
+";"         { return SEMICOLON; }
 ","         { return ','; }
 "\n"        { return NEWLINE;}
 
 "print"     { return PRINT; }
 "println"   { return PRINTLN; }
 "if"        { return IF; }
-"else"      { }
+"else"      { return ELSE;}
 "for"       { return FOR; }
 
 "int"     { yylval.s_val = strdup(yytext); return INT; }
@@ -94,7 +94,7 @@ newline		[\n]
 {id}        { yylval.s_val = strdup(yytext);
                 return ID;
             }
-[;]         { return SEMICOLON; }
+// [;]         { return SEMICOLON; }
 
 <<EOF>>     { static int once = 0;
                 if (once++) {
