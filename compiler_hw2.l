@@ -92,10 +92,9 @@ newline		[\n]
 {fnumber}   { yylval.f_val = atof(yytext); 
                 return FLOAT_LIT; }
 
-{id}        { yylval.ctr.id_name = strdup(yytext);
-                return IDENT;
+{id}        { yylval.s.id_name = strdup(yytext);
+                return ID;
             }
-[;]         { return SEMICOLON; }
 [\n]        {;}
 <<EOF>>     { static int once = 0;
                 if (once++) {
