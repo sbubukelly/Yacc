@@ -86,14 +86,14 @@ StatementList
 ;
 
 Statement
-    : DeclarationStmt NEWLINE           { isArray = 0; }
+    : DeclarationStmt  NEWLINE           { isArray = 0; }
     | Expr NEWLINE 
     | IncDecExpr
     | NEWLINE
 ;
 
 DeclarationStmt
-    : Type ID                    {insert_symbol($<s_val>2, $<s_val>1, "-");}
+    : Type ID  SEMICOLON                  {insert_symbol($<s_val>2, $<s_val>1, "-");}
 ;
 
 Type
@@ -108,18 +108,18 @@ TypeName
 ;
 
 IncDecExpr
-    : Expr INC        { printf("INC\n"); }
-    | Expr DEC        { printf("DEC\n"); }
+    : Expr INC SEMICOLON       { printf("INC\n"); }
+    | Expr DEC SEMICOLON       { printf("DEC\n"); }
 ;
 
 Expr
-    :Expr '+' Expr2      {if (strcmp($<s_val>1, $<s_val>3) == 0) $$ = $<s_val>1;
+    :Expr '+' Expr2 SEMICOLON      {if (strcmp($<s_val>1, $<s_val>3) == 0) $$ = $<s_val>1;
                         else if (strcmp($<s_val>1, "undefined") != 0 && strcmp($<s_val>3, "undefined") != 0)
                         printf("error:%d: invalid operation: %s (mismatched types %s and %s)\n",yylineno, $<s_val>2, $<s_val>1, $<s_val>3);
                         printf("ADD");
                         isLIT = 1;
                         }
-    |Expr '-' Expr2      {if (strcmp($<s_val>1, $<s_val>3) == 0) $$ = $<s_val>1;
+    |Expr '-' Expr2 SEMICOLON     {if (strcmp($<s_val>1, $<s_val>3) == 0) $$ = $<s_val>1;
                         else if (strcmp($<s_val>1, "undefined") != 0 && strcmp($<s_val>3, "undefined") != 0)
                         printf("error:%d: invalid operation: %s (mismatched types %s and %s)\n",yylineno, $<s_val>2, $<s_val>1, $<s_val>3);
                         printf("SUB");
@@ -129,19 +129,19 @@ Expr
 ;
 
 Expr2
-    : Expr2 '*' Operand       {
+    : Expr2 '*' Operand SEMICOLON       {
                                 printf("MUL");
                                 if (strcmp($<s_val>1, $<s_val>3) == 0)
                                     $$ = $<s_val>1;
                                 isLIT = 1;
                             }
-    | Expr2 '/' Operand       {
+    | Expr2 '/' Operand SEMICOLON      {
                                 printf("QUO");
                                 if (strcmp($<s_val>1, $<s_val>3) == 0)
                                     $$ = $<s_val>1;
                                 isLIT = 1;
                             }
-    | Expr2 '%' Operand      {   char *wrongType = NULL;
+    | Expr2 '%' Operand SEMICOLON     {   char *wrongType = NULL;
                                 if (strcmp($<s_val>1, "int32") != 0)
                                     wrongType = $<s_val>1;
                                 else if (strcmp($<s_val>3, "int32") != 0)
@@ -158,7 +158,7 @@ Expr2
 ;
 
 Operand 
-    : ID    {  node *symbol = lookup_symbol($<s_val>1);
+    : ID SEMICOLON   {  node *symbol = lookup_symbol($<s_val>1);
                 if (symbol != NULL) {
                     printf("IDENT (name=%s, address=%d)\n", $<s_val>1, symbol->address);
                     $$ = symbol->type;
@@ -169,7 +169,7 @@ Operand
                         printf("error:%d: undefined: %s\n", yylineno+1, $<s_val>1);
                         $$ = "undefined"; }
             }
-    |Literal    { $$ = $<s_val>1; isLIT = 1; }
+    |Literal SEMICOLON   { $$ = $<s_val>1; isLIT = 1; }
 ;
 
 Literal
