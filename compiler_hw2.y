@@ -147,7 +147,7 @@ Expr2
                                     wrongType = $<s_val>3;
                                 if (wrongType != NULL)
                                     printf("error:%d: invalid operation: (operator REM not defined on %s)\n",
-                                            yylineno, wrongType);}
+                                            yylineno, wrongType);
                                 printf("REM");
                                 if (strcmp($<s_val>1, $<s_val>3) == 0)
                                     $$ = $<s_val>1;
