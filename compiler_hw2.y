@@ -86,14 +86,14 @@ StatementList
 ;
 
 Statement
-    : DeclarationStmt NEWLINE           { isArray = 0; }
-    | Expr NEWLINE 
-    | IncDecExpr NEWLINE 
+    : DeclarationStmt SEMICOLON  NEWLINE           { isArray = 0; }
+    | Expr SEMICOLON  NEWLINE 
+    | IncDecExpr SEMICOLON  NEWLINE 
     | NEWLINE
 ;
 
 DeclarationStmt
-    : Type ID SEMICOLON                  {insert_symbol($<s_val>2, $<s_val>1, "-");}
+    : Type ID                  {insert_symbol($<s_val>2, $<s_val>1, "-");}
 ;
 
 Type
@@ -108,8 +108,8 @@ TypeName
 ;
 
 IncDecExpr
-    : Expr INC SEMICOLON       { printf("INC\n"); }
-    | Expr DEC SEMICOLON       { printf("DEC\n"); }
+    : Expr INC       { printf("INC\n"); }
+    | Expr DEC       { printf("DEC\n"); }
 ;
 
 Expr
@@ -158,7 +158,7 @@ Expr2
 ;
 
 Operand 
-    : ID SEMICOLON   {  node *symbol = lookup_symbol($<s_val>1);
+    : ID    {  node *symbol = lookup_symbol($<s_val>1);
                 if (symbol != NULL) {
                     printf("IDENT (name=%s, address=%d)\n", $<s_val>1, symbol->address);
                     $$ = symbol->type;
@@ -169,7 +169,7 @@ Operand
                         printf("error:%d: undefined: %s\n", yylineno+1, $<s_val>1);
                         $$ = "undefined"; }
             }
-    |Literal SEMICOLON   { $$ = $<s_val>1; isLIT = 1; }
+    |Literal    { $$ = $<s_val>1; isLIT = 1; }
 ;
 
 Literal
