@@ -50,7 +50,7 @@
 }
 
 /* Token without return */
-%token VAR
+%token VAR SEMICOLON
 %token INT FLOAT BOOL STRING 
 %token INC DEC GEQ LEQ EQL NEQ 
 %token ADD_ASSIGN SUB_ASSIGN MUL_ASSIGN QUO_ASSIGN REM_ASSIGN
@@ -93,7 +93,7 @@ Statement
 ;
 
 DeclarationStmt
-    : VAR ID Type                   {insert_symbol($<s_val>2, $<s_val>3, "-");}
+    : Type ID                    {insert_symbol($<s_val>2, $<s_val>3, "-");}
 ;
 
 Type
@@ -181,7 +181,6 @@ Literal
 ;
 
 
-;
 
 %%
 
