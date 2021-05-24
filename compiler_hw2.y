@@ -4,7 +4,7 @@
     // #define YYDEBUG 1
     // int yydebug = 1;
 
-    extern int yylineno = 0;
+    extern int yylineno;
     extern int yylex();
     extern FILE *yyin;
 
@@ -89,7 +89,7 @@ Statement
     : DeclarationStmt SEMICOLON  NEWLINE           { isArray = 0; }
     | Expr SEMICOLON  NEWLINE 
     | IncDecExpr SEMICOLON  NEWLINE 
-    | NEWLINE
+    // | NEWLINE
 ;
 
 DeclarationStmt
