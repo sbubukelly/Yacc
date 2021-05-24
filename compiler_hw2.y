@@ -105,9 +105,7 @@ DeclarationStmt
     | VAR ID ArrayType '=' Expr   {insert_symbol($<s_val>2, "array",  $<s_val>3);} 
 ;
 
-Operation
-    : Expr
-;
+
 
 Type
     : TypeName 
@@ -123,11 +121,7 @@ TypeName
     | BOOL
 ;
 
-Expr  //+ - 
-;
 
-term 
-;
 
 Literal
     : INT_LIT {
