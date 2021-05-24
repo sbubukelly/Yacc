@@ -13,34 +13,28 @@
         printf("error:%d: %s\n", yylineno, s);
     }
 
-    /* Symbol table function - you can add new function if needed. */
-    static void create_symbol();
-    static void insert_symbol();
-    static int  lookup_symbol();
-    static void dump_symbol();
-
-    struct Table_node {
-        int index;
+    int isArray = 0;
+    int curScope = 0;
+    int curAddress = 0;
+    typedef struct _node node;
+    struct _node {
         char *name;
         char *type;
         int address;
         int lineno;
-        char *element_type;
-        struct Table_node *next;
+        char *elementType;
+        node *next;
     };
+    node *table[10] = { NULL };
 
-    int current_scope = -1;
-    int ln = 0;
-    int current_address = 0;
-    int current_lineno = 0;
-    char cant_assign = 0;
-    // char *LIT_type = NULL;
-    // char *expr_type = NULL;
-    // char *factor_type = NULL;
-    // char *assign_type = NULL;
-    // char *sentence_type = NULL;
-    // char *REM_check = NULL;
-    struct Table_node *tables[20] = {};
+    char *elementType = NULL;
+    int isLIT = 0, canAssign = 1;
+
+    /* Symbol table function - you can add new function if needed. */
+    static void create_symbol();
+    static void insert_symbol(char *name, char *type, char *elementType);
+    static node* lookup_symbol(char *name);
+    static void dump_symbol();
 %}
 
 %error-verbose
@@ -60,22 +54,26 @@
 %token INT FLOAT BOOL STRING 
 %token INC DEC GEQ LEQ EQL NEQ 
 %token ADD_ASSIGN SUB_ASSIGN MUL_ASSIGN QUO_ASSIGN REM_ASSIGN
-%token LAND LOR 
+%token LAND LOR
 %token NEWLINE
 %token PRINT PRINTLN
 %token IF ELSE FOR
 %token TRUE FALSE
 
 /* Token with return, which need to sepcify type */
-%token INT_LIT FLOAT_LIT STRING_LIT ID
-%type <i_val> INT_LIT
-%type <f_val> FLOAT_LIT
-%type <*s_val> STRING_LIT
-%type <*s_val> ID
-
+%token <i_val> INT_LIT
+%token <f_val> FLOAT_LIT
+%token <*s_val> STRING_LIT
+%token <*s_val> ID
 
 /* Nonterminal with return, which need to sepcify type */
-//%type <s_val> Type TypeName ArrayType
+//%type <type> Type TypeName ArrayType
+%type <s_val> cmp_op add_op mul_op unary_op
+%type <s_val> Type TypeName ArrayType INT FLOAT STRING BOOL
+%type <s_val> LeftExpression Expression Expression1 Expression2 Expression3 Expression4
+%type <s_val> UnaryExpr PrimaryExpr Operand IndexExpr ConversionExpr Literal
+%type <s_val> assign_op
+
 /* Yacc will start at this nonterminal */
 %start Program
 
@@ -83,42 +81,83 @@
 %%
 
 Program
-    : StatementList NEWLINE {dump_symbol();}
+    : Statements                 { dump_symbol(); }
 ;
 
-StatementList
-    : StatementList Statement   
-    | Statement    
+Statements
+    : Statements Statement
+    | Statement
+;
 
 Statement
-    : DeclarationStmt 
-    // | Block NEWLINE
-    // | IfStmt NEWLINE
-    // | LoopStmt NEWLINE
-    // | PrintStmt NEWLINE
+    : DeclarationStmt NEWLINE           { isArray = 0; }
+    | SimpleStmt NEWLINE
+    | Block NEWLINE
+    | IfStmt NEWLINE
+    | ForStmt NEWLINE
+    | PrintStmt NEWLINE
+    | NEWLINE
 ;
+
+SimpleStmt
+    : AssignmentStmt
+    | Expression
+    | IncDecStmt
+;
+
+AssignmentStmt
+    : LeftExpression assign_op Expression       {
+                                                    if (strcmp($<s_val>1, $<s_val>3) != 0)
+                                                        if (strcmp($<s_val>1, "undefined") != 0 && strcmp($<s_val>3, "undefined") != 0)
+                                                            printf("error:%d: invalid operation: %s (mismatched types %s and %s)\n",
+                                                                    yyl      ineno, $<s_val>2, $<s_val>1, $<s_val>3);
+                                                    if (!canAssign) {
+                                                        printf("error:%d: cannot assign to %s\n", yylineno, $<s_val>1);
+                                                        canAssign = 1;
+                                                    }
+                                                    printf("%s\n", $<s_val>2);
+                                                }
+;
+
+LeftExpression
+    : Expression        { if (isLIT) canAssign = 0; }
+;
+
+assign_op
+    : '='               { $$ = "ASSIGN"; }
+    | ADD_ASSIGN        { $$ = "ADD_ASSIGN"; }
+    | SUB_ASSIGN        { $$ = "SUB_ASSIGN"; }
+    | MUL_ASSIGN        { $$ = "MUL_ASSIGN"; }
+    | QUO_ASSIGN        { $$ = "QUO_ASSIGN"; }
+    | REM_ASSIGN        { $$ = "REM_ASSIGN"; }
+;
+
 
 DeclarationStmt
-    : VAR ID INT                    {insert_symbol($<s_val>2, "int32", "-");} 
-    // | VAR ID INT '=' expr NEWLINE        {insert_symbol($<s_val>2, "int32", "-");}
-    // | VAR ID '[' expr ']' INT NEWLINE     {insert_symbol($<s_val>2, "array", "int32");} 
-    // | VAR ID FLOAT '=' expr NEWLINE         {insert_symbol($<s_val>2, "float32", "-");}
-    | VAR ID FLOAT NEWLINE                  {insert_symbol($<s_val>2, "float32", "-");}
-    // | VAR ID '[' expr ']' FLOAT NEWLINE     {insert_symbol($<s_val>2, "array", "float32");}
-    // | VAR ID STRING '=' expr NEWLINE        {insert_symbol($<s_val>2, "string", "-");}
-    | VAR ID STRING NEWLINE                 {insert_symbol($<s_val>2, "string", "-");}
-    // | VAR ID BOOL '=' expr NEWLINE          {insert_symbol($<s_val>2, "bool", "-");}
-    | VAR ID BOOL NEWLINE                   {insert_symbol($<s_val>2, "bool", "-");}
+    : VAR ID Type                   {
+                                        if (isArray)
+                                            insert_symbol($<s_val>2, "array", $<s_val>3);
+                                        else
+                                            insert_symbol($<s_val>2, $<s_val>3, "-");
+                                    }
+    | VAR ID Type '=' Expression    {
+                                        if (isArray)
+                                            insert_symbol($<s_val>2, "array", $<s_val>3);
+                                        else
+                                            insert_symbol($<s_val>2, $<s_val>3, "-");
+                                        
+                                    }
 ;
 
-
+IncDecStmt
+    : Expression INC        { printf("INC\n"); }
+    | Expression DEC        { printf("DEC\n"); }
+;
 
 Type
-    : TypeName 
+    : TypeName
+    | ArrayType
 ;
-// ArrayType
-//     : '[' Literal ']' Type       { $$ = $<s_val>4;} 
-// ;
 
 TypeName
     : INT
@@ -127,19 +166,193 @@ TypeName
     | BOOL
 ;
 
-
-
-Literal
-    : INT_LIT {
-        printf("INT_LIT %d\n", $<i_val>$);
-    }
-    | FLOAT_LIT {
-        printf("FLOAT_LIT %f\n", $<f_val>$);
-    }
-    //| '\"' STRING_LIT '\"'      { printf("STRING_LIT %s\n", $<s_val>2); $$ = "string"; }
+ArrayType
+    : '[' Literal ']' Type       {   isArray = 1;
+                                        $$ = $<s_val>4;
+                                    }
 ;
 
+Expression
+    : Expression LOR Expression1        {
+                                            char *wrongType = NULL;
+                                            if (strcmp($<s_val>1, "bool") != 0)
+                                                wrongType = $<s_val>1;
+                                            else if (strcmp($<s_val>3, "bool") != 0)
+                                                wrongType = $<s_val>3;
+                                            if (wrongType != NULL)
+                                                printf("error:%d: invalid operation: (operator LOR not defined on %s)\n",
+                                                        yylineno, wrongType);
+                                            printf("LOR\n"); $$ = "bool";
+                                            isLIT = 1;
+                                        }
+    | Expression1
+;
 
+Expression1
+    : Expression1 LAND Expression2          {
+                                                char *wrongType = NULL;
+                                                if (strcmp($<s_val>1, "bool") != 0)
+                                                    wrongType = $<s_val>1;
+                                                else if (strcmp($<s_val>3, "bool") != 0)
+                                                    wrongType = $<s_val>3;
+                                                if (wrongType != NULL)
+                                                    printf("error:%d: invalid operation: (operator LAND not defined on %s)\n",
+                                                            yylineno, wrongType);
+                                                printf("LAND\n"); $$ = "bool";
+                                                isLIT = 1;
+                                            }
+    | Expression2
+;
+
+Expression2
+    : Expression2 cmp_op Expression3        { printf("%s\n", $<s_val>2); $$ = "bool"; isLIT = 1; }
+    | Expression3
+;
+
+Expression3
+    : Expression3 add_op Expression4        {
+                                                if (strcmp($<s_val>1, $<s_val>3) == 0)
+                                                    $$ = $<s_val>1;
+                                                else if (strcmp($<s_val>1, "undefined") != 0 && strcmp($<s_val>3, "undefined") != 0)
+                                                    printf("error:%d: invalid operation: %s (mismatched types %s and %s)\n",
+                                                            yylineno, $<s_val>2, $<s_val>1, $<s_val>3);
+                                                printf("%s\n", $<s_val>2);
+                                                isLIT = 1;
+                                            }
+    | Expression4
+;
+
+Expression4
+    : Expression4 mul_op UnaryExpr          {
+                                                char *wrongType = NULL;
+                                                if (strcmp($<s_val>2, "REM") == 0) {
+                                                    if (strcmp($<s_val>1, "int32") != 0)
+                                                        wrongType = $<s_val>1;
+                                                    else if (strcmp($<s_val>3, "int32") != 0)
+                                                        wrongType = $<s_val>3;
+                                                    if (wrongType != NULL)
+                                                        printf("error:%d: invalid operation: (operator REM not defined on %s)\n",
+                                                                yylineno, wrongType);
+                                                }
+                                                printf("%s\n", $<s_val>2);
+                                                if (strcmp($<s_val>1, $<s_val>3) == 0)
+                                                    $$ = $<s_val>1;
+                                                isLIT = 1;
+                                            }
+    | UnaryExpr
+;
+
+UnaryExpr
+    : PrimaryExpr
+    | unary_op UnaryExpr                    { printf("%s\n", $<s_val>1); $$ = $<s_val>2; isLIT = 1; }
+;
+
+cmp_op
+    : EQL       { $$ = "EQL"; }
+    | NEQ       { $$ = "NEQ"; }
+    | '<'       { $$ = "LSS"; }
+    | LEQ       { $$ = "LEQ"; }
+    | '>'       { $$ = "GTR"; }
+    | GEQ       { $$ = "GEQ"; }
+;
+
+add_op
+    : '+'       { $$ = "ADD"; }
+    | '-'       { $$ = "SUB"; }
+;
+
+mul_op
+    : '*'       { $$ = "MUL"; }
+    | '/'       { $$ = "QUO"; }
+    | '%'       { $$ = "REM"; }
+;
+
+unary_op
+    : '+'       { $$ = "POS"; }
+    | '-'       { $$ = "NEG"; }
+    | '!'       { $$ = "NOT"; }
+;
+
+PrimaryExpr
+    : Operand
+    | IndexExpr
+    | ConversionExpr
+;
+
+Operand
+    : Literal               { $$ = $<s_val>1; isLIT = 1; }
+    | ID                    {
+                                node *symbol = lookup_symbol($<s_val>1);
+                                if (symbol != NULL) {
+                                    printf("IDENT (name=%s, address=%d)\n", $<s_val>1, symbol->address);
+                                    $$ = symbol->type;
+                                    if (strcmp($$, "array") == 0)
+                                        elementType = symbol->elementType;
+                                    isLIT = 0;
+                                } else {
+                                    printf("error:%d: undefined: %s\n", yylineno+1, $<s_val>1);
+                                    $$ = "undefined";
+                                }
+                            }
+    | '(' Expression ')'    { $$ = $<s_val>2; }
+;
+
+Literal
+    : INT_LIT                   { printf("INT_LIT %d\n", $<i_val>1); $$ = "int32"; }
+    | FLOAT_LIT                 { printf("FLOAT_LIT %.6f\n", $<f_val>1); $$ = "float32"; }
+    | TRUE                      { printf("TRUE\n"); $$ = "bool"; }
+    | FALSE                     { printf("FALSE\n"); $$ = "bool"; }
+    | '\"' STRING_LIT '\"'      { printf("STRING_LIT %s\n", $<s_val>2); $$ = "string"; }
+;
+
+IndexExpr
+    : PrimaryExpr '[' Expression ']'        { $$ = elementType; isLIT = 0; }
+;
+
+ConversionExpr
+    : Type '(' Expression ')'   {
+                                    printf("%c to %c\n",
+                                            (strcmp($<s_val>3, "int32") == 0) ? 'I' : 'F',
+                                            (strcmp($<s_val>1, "int32") == 0) ? 'I' : 'F');
+                                    isLIT = 1;
+                                }
+;
+
+Block
+    : '{' { create_symbol(); } Statements '}'        { dump_symbol(); }
+;
+
+IfStmt
+    : IF Expression {
+                        if (strcmp($<s_val>2, "bool") != 0)
+                            printf("error:%d: non-bool (type %s) used as for condition\n",
+                                    yylineno+1, $<s_val>2);
+                    } IfBlock
+;
+
+IfBlock
+    : Block
+    | Block ELSE IfStmt
+    | Block ELSE Block
+;
+
+ForStmt
+    : FOR Expression {
+                        if (strcmp($<s_val>2, "bool") != 0)
+                            printf("error:%d: non-bool (type %s) used as for condition\n",
+                                    yylineno+1, $<s_val>2);
+                    } Block
+    | FOR ForClause Block
+;
+
+ForClause
+    : SimpleStmt ';' Expression ';' SimpleStmt
+;
+
+PrintStmt
+    : PRINT '(' Expression ')'          { printf("PRINT %s\n", $<s_val>3); }
+    | PRINTLN '(' Expression ')'        { printf("PRINTLN %s\n", $<s_val>3); }
+;
 
 %%
 
@@ -152,94 +365,74 @@ int main(int argc, char *argv[])
         yyin = stdin;
     }
 
+    yylineno = 0;
     yyparse();
 
 	printf("Total lines: %d\n", yylineno);
     fclose(yyin);
     return 0;
 }
+
 static void create_symbol() {
-    current_scope += 1;
-    tables[current_scope] = NULL;
+    curScope++;
 }
 
-static void insert_symbol(char* name, char* type, char* element_type) {
-    // Dose the ID already declared?
-    for(struct Table_node *current = tables[current_scope]; current; current = current->next)
-    {
-        if(strcmp(current->name, name) == 0)
-        {
-            printf("error:%d: %s redeclared in this block. previous declaration at line %d\n", yylineno, name, current->lineno);
+static void insert_symbol(char *name, char *type, char *elementType) {
+
+    node *cur = table[curScope];
+    while (cur != NULL) {
+        if(strcmp(cur->name, name) == 0) {
+            printf("error:%d: %s redeclared in this block. previous declaration at line %d\n", yylineno, name, cur->lineno);
             return;
         }
+        cur = cur->next;
     }
-    struct Table_node *table = malloc(sizeof(struct Table_node));
-    table->index = 0;
-    table->name = name;
-    table->type = type;
-    table->address = current_address++;
-    table->lineno = yylineno;
-    table->element_type = element_type;
-    table->next = NULL;
-    if(!tables[current_scope])
-    {
-        tables[current_scope] = table;
+    node *new_node = malloc(sizeof(node));
+    new_node->name = name;
+    new_node->type = type;
+    new_node->address = curAddress++;
+    new_node->lineno = yylineno;
+    new_node->elementType = elementType;
+    new_node->next = NULL;
+    if(!table[curScope])
+        table[curScope] = new_node;
+    else {
+        node *cur = table[curScope];
+        while(cur->next) cur = cur->next;
+        cur->next = new_node;
     }
-    else
-    {
-        struct Table_node *current = tables[current_scope];
-        while(current->next) current = current->next;
-        table->index = current->index + 1;
-        current->next = table;
-    }
-    printf("> Insert {%s} into symbol table (scope level: %d)\n", name, current_scope);
+    
+    printf("> Insert {%s} into symbol table (scope level: %d)\n", name, curScope);
 }
 
-/* return address of target name
- * return -1 if it doesn't exist   
- */
-static int lookup_symbol(char* name, char** type) {
-    int scope = current_scope;
-    struct Table_node *current = tables[scope];
+static node* lookup_symbol(char *name) {
 
-    while(!current && scope > 0)
-        current = tables[--scope];
-    while( strcmp(name, current->name) != 0 )
-    {
-        // change to wider scope if there is no target in current scope.
-        if(!current->next)
-        {
-            // there is no other nodes exsiting;
-            if(scope == 0)
-            {
-                current = NULL;
-                break;
-            }
-            else
-                current = tables[--scope];
+    int scope = curScope;
+    while (scope >= 0) {
+        node *cur = table[scope--];
+        while (cur != NULL) {
+            if (strcmp(cur->name, name) == 0)
+                return cur;
+            cur = cur->next;
         }
-        else
-            current = current->next;
     }
-    if(current)
-    {
-        if(strcmp(current->type, "array") == 0)
-            *type = current->element_type;
-        else
-            *type = current->type;
-        return current->address;
-    }
-    else
-        return -1;
+
+    return NULL;
 }
 
 static void dump_symbol() {
-    printf("> Dump symbol table (scope level: %d)\n", current_scope);
+
+    printf("> Dump symbol table (scope level: %d)\n", curScope);
     printf("%-10s%-10s%-10s%-10s%-10s%s\n",
            "Index", "Name", "Type", "Address", "Lineno", "Element type");
-    for(struct Table_node *current = tables[current_scope]; current; current = current->next)
+    int index = 0;
+    node *cur = table[curScope];
+    while (cur != NULL) {
         printf("%-10d%-10s%-10s%-10d%-10d%s\n",
-                current->index, current->name, current->type, current->address, current->lineno, current->element_type);
-
-    current_scope -= 1;
+                index++, cur->name, cur->type, cur->address, cur->lineno, cur->elementType);
+        node *tmp = cur;
+        cur = cur->next;
+        free(tmp);
+    }
+    table[curScope--] = NULL;
 }
