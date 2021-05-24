@@ -93,7 +93,7 @@ Statement
 ;
 
 DeclarationStmt
-    : Type ID                    {insert_symbol($<s_val>2, $<s_val>3, "-");}
+    : Type ID                    {insert_symbol($<s_val>2, $<s_val>1, "-");}
 ;
 
 Type
