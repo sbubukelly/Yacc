@@ -92,7 +92,7 @@ newline		[\n]
 {fnumber}   { yylval.f_val = atof(yytext); 
                 return FLOAT_LIT; }
 
-{id}        { yylval.s.val = strdup(yytext);
+{id}        { yylval.s_val = strdup(yytext);
                 return ID;
             }
 [\n]        {;}
