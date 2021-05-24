@@ -142,14 +142,14 @@ Expr2
                                 isLIT = 1;
                             }
     | Expr2 '%' Operand      {   char *wrongType = NULL;
-                                if (strcmp($<s_val>1, "int32") != 0)
+                                if (strcmp($<s_val>1, "int") != 0)
                                     wrongType = $<s_val>1;
-                                else if (strcmp($<s_val>3, "int32") != 0)
+                                else if (strcmp($<s_val>3, "int") != 0)
                                     wrongType = $<s_val>3;
                                 if (wrongType != NULL)
                                     printf("error:%d: invalid operation: (operator REM not defined on %s)\n",
                                             yylineno, wrongType);
-                                printf("REM");
+                                printf("REM\n");
                                 if (strcmp($<s_val>1, $<s_val>3) == 0)
                                     $$ = $<s_val>1;
                                 isLIT = 1;
