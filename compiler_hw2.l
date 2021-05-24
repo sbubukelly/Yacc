@@ -94,7 +94,7 @@ newline		[\n]
 {id}        { yylval.s_val = strdup(yytext);
                 return ID;
             }
-// [;]         { return SEMICOLON; }
+
 
 <<EOF>>     { static int once = 0;
                 if (once++) {
