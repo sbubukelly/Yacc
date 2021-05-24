@@ -77,8 +77,8 @@ newline		[\n]
 "else"      { }
 "for"       { return FOR; }
 
-"int32"     { yylval.s_val = strdup(yytext); return INT; }
-"float32"   { yylval.s_val = strdup(yytext); return FLOAT;}
+"int"     { yylval.s_val = strdup(yytext); return INT; }
+"float"   { yylval.s_val = strdup(yytext); return FLOAT;}
 "string"    { yylval.s_val = strdup(yytext); return STRING; }
 "bool"      { yylval.s_val = strdup(yytext); return BOOL; }
 "true"      { return TRUE;}
