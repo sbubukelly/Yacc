@@ -113,35 +113,35 @@ IncDecExpr
 ;
 
 Expr
-    :Expr '+' Expr2 SEMICOLON      {if (strcmp($<s_val>1, $<s_val>3) == 0) $$ = $<s_val>1;
+    : Expr '+' Expr2     {if (strcmp($<s_val>1, $<s_val>3) == 0) $$ = $<s_val>1;
                         else if (strcmp($<s_val>1, "undefined") != 0 && strcmp($<s_val>3, "undefined") != 0)
                         printf("error:%d: invalid operation: %s (mismatched types %s and %s)\n",yylineno, $<s_val>2, $<s_val>1, $<s_val>3);
                         printf("ADD");
                         isLIT = 1;
                         }
-    |Expr '-' Expr2 SEMICOLON     {if (strcmp($<s_val>1, $<s_val>3) == 0) $$ = $<s_val>1;
+    | Expr '-' Expr2     {if (strcmp($<s_val>1, $<s_val>3) == 0) $$ = $<s_val>1;
                         else if (strcmp($<s_val>1, "undefined") != 0 && strcmp($<s_val>3, "undefined") != 0)
                         printf("error:%d: invalid operation: %s (mismatched types %s and %s)\n",yylineno, $<s_val>2, $<s_val>1, $<s_val>3);
                         printf("SUB");
                         isLIT = 1;
                         }   
-    |Expr2                 
+    | Expr2                 
 ;
 
 Expr2
-    : Expr2 '*' Operand SEMICOLON       {
+    : Expr2 '*' Operand        {
                                 printf("MUL");
                                 if (strcmp($<s_val>1, $<s_val>3) == 0)
                                     $$ = $<s_val>1;
                                 isLIT = 1;
                             }
-    | Expr2 '/' Operand SEMICOLON      {
+    | Expr2 '/' Operand      {
                                 printf("QUO");
                                 if (strcmp($<s_val>1, $<s_val>3) == 0)
                                     $$ = $<s_val>1;
                                 isLIT = 1;
                             }
-    | Expr2 '%' Operand SEMICOLON     {   char *wrongType = NULL;
+    | Expr2 '%' Operand      {   char *wrongType = NULL;
                                 if (strcmp($<s_val>1, "int32") != 0)
                                     wrongType = $<s_val>1;
                                 else if (strcmp($<s_val>3, "int32") != 0)
