@@ -99,10 +99,16 @@ Statement
 ;
 
 DeclarationStmt
-    : VAR ID Type   {insert_symbol($<s_val>2, $<s_val>3, "-"); }
-    // | VAR ID Type '=' Expr  {insert_symbol($<s_val>2, $<s_val>3, "-");}
-    // | VAR ID ArrayType    {insert_symbol($<s_val>2, "array",  $<s_val>3);} 
-    // | VAR ID ArrayType '=' Expr   {insert_symbol($<s_val>2, "array",  $<s_val>3);} 
+    // : VAR ID INT '=' expr NEWLINE        {insert_symbol($<s_val>2, "int32", "-");}
+    | VAR ID INT                    {insert_symbol($<s_val>2, "int32", "-");} 
+    // | VAR ID '[' expr ']' INT NEWLINE     {insert_symbol($<s_val>2, "array", "int32");} 
+    // | VAR ID FLOAT '=' expr NEWLINE         {insert_symbol($<s_val>2, "float32", "-");}
+    | VAR ID FLOAT NEWLINE                  {insert_symbol($<s_val>2, "float32", "-");}
+    // | VAR ID '[' expr ']' FLOAT NEWLINE     {insert_symbol($<s_val>2, "array", "float32");}
+    // | VAR ID STRING '=' expr NEWLINE        {insert_symbol($<s_val>2, "string", "-");}
+    | VAR ID STRING NEWLINE                 {insert_symbol($<s_val>2, "string", "-");}
+    // | VAR ID BOOL '=' expr NEWLINE          {insert_symbol($<s_val>2, "bool", "-");}
+    | VAR ID BOOL NEWLINE                   {insert_symbol($<s_val>2, "bool", "-");}
 ;
 
 
