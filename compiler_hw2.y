@@ -34,13 +34,22 @@
 }
 
 /* Token without return */
-%token INT FLOAT BOOL STRING
-%token SEMICOLON
+%token VAR
+%token INT FLOAT BOOL STRING 
+%token INC DEC GEQ LEQ EQL NEQ 
+%token ADD_ASSIGN SUB_ASSIGN MUL_ASSIGN QUO_ASSIGN REM_ASSIGN
+%token LAND LOR NEWLINE
+%token PRINT PRINTLN
+%token IF ELSE FOR
+%token TRUE FALSE
 
 /* Token with return, which need to sepcify type */
-%token <i_val> INT_LIT
-%token <f_val> FLOAT_LIT
-%token <s_val> STRING_LIT
+%token INT_LIT FLOAT_LIT STRING_LIT ID
+%type <i_val> INT_LIT
+%type <f_val> FLOAT_LIT
+%type <*s_val> STRING_LIT
+%type <*s_val> ID
+
 
 /* Nonterminal with return, which need to sepcify type */
 
