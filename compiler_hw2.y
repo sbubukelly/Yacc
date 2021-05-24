@@ -99,8 +99,8 @@ Statement
 ;
 
 DeclarationStmt
-    // : VAR ID INT '=' expr NEWLINE        {insert_symbol($<s_val>2, "int32", "-");}
-    | VAR ID INT                    {insert_symbol($<s_val>2, "int32", "-");} 
+    : VAR ID INT                    {insert_symbol($<s_val>2, "int32", "-");} 
+    // | VAR ID INT '=' expr NEWLINE        {insert_symbol($<s_val>2, "int32", "-");}
     // | VAR ID '[' expr ']' INT NEWLINE     {insert_symbol($<s_val>2, "array", "int32");} 
     // | VAR ID FLOAT '=' expr NEWLINE         {insert_symbol($<s_val>2, "float32", "-");}
     | VAR ID FLOAT NEWLINE                  {insert_symbol($<s_val>2, "float32", "-");}
