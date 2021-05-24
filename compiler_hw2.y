@@ -4,7 +4,7 @@
     // #define YYDEBUG 1
     // int yydebug = 1;
 
-    extern int yylineno;
+    extern int yylineno = 0;
     extern int yylex();
     extern FILE *yyin;
 
