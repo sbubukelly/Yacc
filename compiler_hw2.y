@@ -294,6 +294,8 @@ Literal
     : INT_LIT                   { printf("INT_LIT %d\n", $<i_val>1); $$ = "int"; }
     | FLOAT_LIT                 { printf("FLOAT_LIT %.6f\n", $<f_val>1); $$ = "float"; }
     | '\"' STRING_LIT '\"'      { printf("STRING_LIT %s\n", $<s_val>2); $$ = "string"; }
+    | TRUE                      { printf("TRUE\n"); $$ = "bool"; }
+    | FALSE                     { printf("FALSE\n"); $$ = "bool"; }
 ;
 
 
