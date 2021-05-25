@@ -75,7 +75,7 @@ newline		[\n]
 "if"        { return IF; }
 "else"      { return ELSE;}
 "for"       { return FOR; }
-// "while"     { return WHILE; }
+"while"     { return WHILE; }
 
 "int"     { yylval.s_val = strdup(yytext); return INT; }
 "float"   { yylval.s_val = strdup(yytext); return FLOAT;}

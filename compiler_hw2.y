@@ -57,7 +57,7 @@
 %token LAND LOR
 %token NEWLINE
 %token PRINT PRINTLN
-%token IF ELSE FOR
+%token IF ELSE FOR WHILE
 %token TRUE FALSE
 
 /* Token with return, which need to sepcify type */
