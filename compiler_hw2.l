@@ -75,6 +75,7 @@ newline		[\n]
 "if"        { return IF; }
 "else"      { return ELSE;}
 "for"       { return FOR; }
+"while"       { return WHILE; }
 
 "int"     { yylval.s_val = strdup(yytext); return INT; }
 "float"   { yylval.s_val = strdup(yytext); return FLOAT;}
@@ -82,7 +83,6 @@ newline		[\n]
 "bool"      { yylval.s_val = strdup(yytext); return BOOL; }
 "true"      { return TRUE;}
 "false"     { return FALSE;}
-"var"       { return VAR; }
 
 {inumber}   { yylval.i_val = atoi(yytext);
                 return INT_LIT;
