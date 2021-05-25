@@ -28,6 +28,7 @@
 
     char *elementType = NULL;
     int isLIT = 0, canAssign = 1,isArray = 0;
+    char typeChange;
     
     /* Symbol table function - you can add new function if needed. */
     static void create_symbol();
@@ -235,10 +236,12 @@ Array
 ;
 
 ChangeType
-    : Type "(" Expr ")"     {   printf("%c to %c\n",
-                                if(strcmp($<s_val>3, "int32") == 0) {'I';} else{'F';},
-                                if(strcmp($<s_val>1, "int32") == 0) {'I';} else{'F';});
-                                isLIT = 1;}
+    : Type "(" Expr ")"     {   if(strcmp($<s_val>3, "int32") == 0) typeChange = 'I';
+                                else{typeChange = 'F';}
+                                printf("%c to ",typechange)
+                                if(strcmp($<s_val>1, "int32") == 0) typeChange = 'I';
+                                else{typeChange = 'F';}
+                                printf("%c\n",typechange)
 ;
 Operand 
     : ID    {  node *symbol = lookup_symbol($<s_val>1);
