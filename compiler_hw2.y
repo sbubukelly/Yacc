@@ -237,7 +237,7 @@ Array
 ChangeType
     : Type "(" Expr ")"     {   printf("%c to %c\n",
                                 if(strcmp($<s_val>3, "int32") == 0) {'I';} else{'F';},
-                                if(strcmp($<s_val>1, "int32") == 0) {'I';} else{'F';};
+                                if(strcmp($<s_val>1, "int32") == 0) {'I';} else{'F';});
                                 isLIT = 1;}
 ;
 Operand 
