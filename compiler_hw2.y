@@ -316,7 +316,7 @@ int main(int argc, char *argv[])
 
     yyparse();
 
-	printf("Total lines: %d\n", yylineno);
+	printf("Total lines: %d\n", yylineno-1);
     fclose(yyin);
     return 0;
 }
