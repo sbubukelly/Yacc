@@ -131,7 +131,7 @@ IncDecExpr
 ;
 
 PrintExpr
-    : PRINT "(" Expr ")"    { printf("PRINT %s\n", $<s_val>3); }
+    : PRINT '(' Expr ')'    { printf("PRINT %s\n", $<s_val>3); }
 ;
 
 Expr
