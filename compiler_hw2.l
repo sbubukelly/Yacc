@@ -72,7 +72,6 @@ newline		[\n]
 "\n"        { return NEWLINE;}
 
 "print"     { return PRINT; }
-"println"   { return PRINTLN; }
 "if"        { return IF; }
 "else"      { return ELSE;}
 "for"       { return FOR; }
