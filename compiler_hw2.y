@@ -238,10 +238,10 @@ Array
 ChangeType
     : Type "(" Expr ")"     {   if(strcmp($<s_val>3, "int32") == 0) typeChange = 'I';
                                 else{typeChange = 'F';}
-                                printf("%c to ",typechange)
+                                printf("%c to ",typeChange);
                                 if(strcmp($<s_val>1, "int32") == 0) typeChange = 'I';
                                 else{typeChange = 'F';}
-                                printf("%c\n",typechange)
+                                printf("%c\n",typeChange);
                             }
 ;
 Operand 
