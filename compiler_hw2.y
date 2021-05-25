@@ -104,37 +104,37 @@ Assignment
                                                                                         yylineno, $<s_val>2, $<s_val>1, $<s_val>3);
                                         printf("ASSIGN\n");
                                     }
-    | Expr "+=" Expr  {   if (strcmp($<s_val>1, $<s_val>3) != 0)
+    | Expr ADD_ASSIGN Expr  {   if (strcmp($<s_val>1, $<s_val>3) != 0)
                                             if (strcmp($<s_val>1, "undefined") != 0 && strcmp($<s_val>3, "undefined") != 0)
                                                 printf("error:%d: invalid operation: %s (mismatched types %s and %s)\n",
                                                                                         yylineno, $<s_val>2, $<s_val>1, $<s_val>3);
                                         printf("ADD_ASSIGN \n");
                                     }
-    | Expr "-=" Expr  {   if (strcmp($<s_val>1, $<s_val>3) != 0)
+    | Expr SUB_ASSIGN Expr  {   if (strcmp($<s_val>1, $<s_val>3) != 0)
                                             if (strcmp($<s_val>1, "undefined") != 0 && strcmp($<s_val>3, "undefined") != 0)
                                                 printf("error:%d: invalid operation: %s (mismatched types %s and %s)\n",
                                                                                         yylineno, $<s_val>2, $<s_val>1, $<s_val>3);
                                         printf("SUB_ASSIGN\n");
                                     }
-    | Expr "*=" Expr  {   if (strcmp($<s_val>1, $<s_val>3) != 0)
+    | Expr MUL_ASSIGN Expr  {   if (strcmp($<s_val>1, $<s_val>3) != 0)
                                             if (strcmp($<s_val>1, "undefined") != 0 && strcmp($<s_val>3, "undefined") != 0)
                                                 printf("error:%d: invalid operation: %s (mismatched types %s and %s)\n",
                                                                                         yylineno, $<s_val>2, $<s_val>1, $<s_val>3);
                                         printf("MUL_ASSIGN\n");
                                     }
-    | Expr "/=" Expr  {   if (strcmp($<s_val>1, $<s_val>3) != 0)
+    | Expr QUO_ASSIGN Expr  {   if (strcmp($<s_val>1, $<s_val>3) != 0)
                                             if (strcmp($<s_val>1, "undefined") != 0 && strcmp($<s_val>3, "undefined") != 0)
                                                 printf("error:%d: invalid operation: %s (mismatched types %s and %s)\n",
                                                                                         yylineno, $<s_val>2, $<s_val>1, $<s_val>3);
                                         printf("QUO_ASSIGN\n");
                                     }
-    | Expr "%=" Expr  {   if (strcmp($<s_val>1, $<s_val>3) != 0)
+    | Expr REM_ASSIGN Expr  {   if (strcmp($<s_val>1, $<s_val>3) != 0)
                                             if (strcmp($<s_val>1, "undefined") != 0 && strcmp($<s_val>3, "undefined") != 0)
                                                 printf("error:%d: invalid operation: %s (mismatched types %s and %s)\n",
                                                                                         yylineno, $<s_val>2, $<s_val>1, $<s_val>3);
                                         printf("REM_ASSIGN\n");
                                     }
-    |                               
+                        
 
 ;
 
