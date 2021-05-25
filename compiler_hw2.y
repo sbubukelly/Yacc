@@ -109,8 +109,8 @@ Assignment
 DeclarationStmt
     : Type ID                  {insert_symbol($<s_val>2, $<s_val>1, "-");}
     | Type ID '=' Expr          {insert_symbol($<s_val>2, $<s_val>1, "-");}
-    | Type ID "[" Expr "]"      {insert_symbol(($<s_val>2,"array", $<s_val>1);)}
-    | Type ID "[" Expr "]" '=' Expr     {insert_symbol(($<s_val>2,"array", $<s_val>1);)}
+    | Type ID "[" Expr "]"      {insert_symbol($<s_val>2,"array", $<s_val>1);}
+    | Type ID "[" Expr "]" '=' Expr     {insert_symbol($<s_val>2,"array", $<s_val>1);}
 ;
 
 Type
