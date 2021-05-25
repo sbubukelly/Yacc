@@ -93,12 +93,11 @@ Statement
     | PrintExpr SEMICOLON NEWLINE 
     | Assignment SEMICOLON NEWLINE 
     | Block NEWLINE 
-    | While NEWLINE 
     | NEWLINE
 ;
 
 Assignment 
-    :  Expression '=' Expression    {   if (strcmp($<s_val>1, $<s_val>3) != 0)
+    :  Expr '=' Expr  {   if (strcmp($<s_val>1, $<s_val>3) != 0)
                                             if (strcmp($<s_val>1, "undefined") != 0 && strcmp($<s_val>3, "undefined") != 0)
                                                 printf("error:%d: invalid operation: %s (mismatched types %s and %s)\n",
                                                                                         yylineno, $<s_val>2, $<s_val>1, $<s_val>3);
