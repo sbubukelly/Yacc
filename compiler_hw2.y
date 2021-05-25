@@ -242,6 +242,7 @@ ChangeType
                                 if(strcmp($<s_val>1, "int32") == 0) typeChange = 'I';
                                 else{typeChange = 'F';}
                                 printf("%c\n",typechange)
+                            }
 ;
 Operand 
     : ID    {  node *symbol = lookup_symbol($<s_val>1);
