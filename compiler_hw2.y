@@ -215,10 +215,10 @@ Array
 ;
 
 ChangeType
-    : '(' Type ')' Expr    {   if(strcmp($<s_val>4, "int32") == 0) typeChange = 'I';
+    : '(' Type ')' Expr    {   if(strcmp($<s_val>4, "int") == 0) typeChange = 'I';
                                 else{typeChange = 'F';}
                                 printf("%c to ",typeChange);
-                                if(strcmp($<s_val>2, "int32") == 0) typeChange = 'I';
+                                if(strcmp($<s_val>2, "int") == 0) typeChange = 'I';
                                 else{typeChange = 'F';}
                                 printf("%c\n",typeChange);
                             }
