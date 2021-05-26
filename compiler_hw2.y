@@ -229,7 +229,7 @@ Operand
                     printf("IDENT (name=%s, address=%d)\n", id->name, id->address);
                     $$ = id->type;
                     if (strcmp($$, "array") == 0)
-                        elementType = symbol->elementType;
+                        elementType = id->elementType;
                 } 
                 else {
                     printf("error:%d: undefined: %s\n", yylineno+1, $<s_val>1);
@@ -282,7 +282,7 @@ static void insert_symbol(char *name, char *type, char *elementType) {
         }
         cur = cur->next;
     }
-    struct table_node *new = malloc(sizeof(table_node));
+    struct table_node *new = malloc(sizeof(struct table_node));
     new->name = name;
     new->type = type;
     new->address = curAddress++;
@@ -290,7 +290,7 @@ static void insert_symbol(char *name, char *type, char *elementType) {
     new->elementType = elementType;
     new->next = NULL;
     if(table[curScope] == NULL)
-        table[curScope] = new_node;
+        table[curScope] = new;
     else {
         struct table_node *cur = table[curScope];
         while(cur->next) cur = cur->next;
@@ -321,7 +321,7 @@ static void dump_symbol() {
     printf("%-10s%-10s%-10s%-10s%-10s%s\n",
            "Index", "Name", "Type", "Address", "Lineno", "Element type");
     int index = 0;
-    struct table_node = table[curScope];
+    struct table_node cur = table[curScope];
     while (cur != NULL) {
         printf("%-10d%-10s%-10s%-10d%-10d%s\n",
                 index++, cur->name, cur->type, cur->address, cur->lineno, cur->elementType);
