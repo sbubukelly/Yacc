@@ -176,12 +176,12 @@ ExprAnd
 ;
 
 ExprCompare
-    : ExprCompare '<' ExprAdd        { printf("LSS"); $$ = "bool";  }
-    | ExprCompare '>' ExprAdd        { printf("GTR"); $$ = "bool";  }
-    | ExprCompare GEQ ExprAdd        { printf("GEQ"); $$ = "bool";  }
-    | ExprCompare LEQ ExprAdd        { printf("LEQ"); $$ = "bool";  }
-    | ExprCompare EQL ExprAdd        { printf("EQL"); $$ = "bool";  }
-    | ExprCompare NEQ ExprAdd        { printf("NEQ"); $$ = "bool";  }
+    : ExprCompare '<' ExprAdd        { printf("LSS\n"); $$ = "bool";  }
+    | ExprCompare '>' ExprAdd        { printf("GTR\n"); $$ = "bool";  }
+    | ExprCompare GEQ ExprAdd        { printf("GEQ\n"); $$ = "bool";  }
+    | ExprCompare LEQ ExprAdd        { printf("LEQ\n"); $$ = "bool";  }
+    | ExprCompare EQL ExprAdd        { printf("EQL\n"); $$ = "bool";  }
+    | ExprCompare NEQ ExprAdd        { printf("NEQ\n"); $$ = "bool";  }
     | ExprAdd
 ;
 
@@ -199,9 +199,9 @@ ExprMul
 ;
 
 ExprUnary
-    : '+' ExprUnary                   { printf("POS"); $$ = $<s_val>2; }
-    | '-' ExprUnary                   { printf("NEG"); $$ = $<s_val>2; }
-    | '!' ExprUnary                   { printf("NOT"); $$ = $<s_val>2; }
+    : '+' ExprUnary                   { printf("POS\n"); $$ = $<s_val>2; }
+    | '-' ExprUnary                   { printf("NEG\n"); $$ = $<s_val>2; }
+    | '!' ExprUnary                   { printf("NOT\n"); $$ = $<s_val>2; }
     | Primary
 
 Primary
