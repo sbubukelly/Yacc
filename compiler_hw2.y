@@ -321,7 +321,7 @@ static void dump_symbol() {
     printf("%-10s%-10s%-10s%-10s%-10s%s\n",
            "Index", "Name", "Type", "Address", "Lineno", "Element type");
     int index = 0;
-    struct table_node cur = table[curScope];
+    struct table_node *cur = table[curScope];
     while (cur != NULL) {
         printf("%-10d%-10s%-10s%-10d%-10d%s\n",
                 index++, cur->name, cur->type, cur->address, cur->lineno, cur->elementType);
