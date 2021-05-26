@@ -231,10 +231,8 @@ If
 
 If_block
     : IF  '(' Expr ')' Block
-    | If_block NEWLINE ELSE Block
     | If_block ELSE Block
     | If_block ELSE If_block
-    | If_block NEWLINE  ELSE If_block
 ;
 
 For
