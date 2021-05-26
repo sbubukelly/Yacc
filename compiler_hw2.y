@@ -222,7 +222,7 @@ Literal
 ;
 
 While
-    : WHILE '(' Expr ')'
+    : WHILE '(' Expr ')' Block
 ;
 
 If
