@@ -71,6 +71,7 @@
 %type <s_val> Type TypeName INT FLOAT STRING BOOL SEMICOLON
 %type <s_val> Expr ExprAdd ExprAnd ExprCompare ExprMul ExprUnary Assignment
 %type <s_val> PrintExpr Literal IncDecExpr Operand Primary Array ChangeType
+%type <s_val> While Block If If_block IfElse_block IfElif_block
 
 /* Yacc will start at this nonterminal */
 %start Program
@@ -94,6 +95,9 @@ Statement
     | PrintExpr SEMICOLON NEWLINE 
     | Assignment SEMICOLON NEWLINE 
     | Block NEWLINE 
+    | While NEWLINE
+    | IF NEWLINE
+    | For NEWLINE
     | NEWLINE
 ;
 
@@ -217,6 +221,35 @@ Literal
     | FALSE                     { printf("FALSE\n"); $$ = "bool"; }
 ;
 
+While
+    : WHILE '(' Expr ')'
+;
+
+If
+    : If_block
+    | IfElse_block
+    | IfElif_block
+;
+
+If_block
+    : IF '(' Expr ')' Block
+;
+
+IfElse_block
+    : IF '(' Expr ')' Block ELSE Block
+;
+
+IfElif_block
+    : IF '(' Expr ')' Block ELSE IF '(' Expr ')' Block
+;
+
+For
+    :FOR '(' ForClause ')' Block
+
+;
+
+ForClaus
+    : Assignment ';' Expr ';' 'IncDecExpr'
 
 Block
     : '{' { create_symbol(); } StatementList '}'        { dump_symbol(); }
