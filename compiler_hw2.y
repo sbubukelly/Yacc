@@ -171,7 +171,7 @@ Expr
 ;
 
 ExprAnd
-    : Expr AND ExprCompare   { printf("AND\n"); $$ = "bool";}
+    : ExprAnd AND ExprCompare   { printf("AND\n"); $$ = "bool";}
     | ExprCompare
 ;
 
