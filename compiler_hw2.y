@@ -236,6 +236,7 @@ Operand
                     $$ = "undefined"; }
             }
     |Literal    { $$ = $<s_val>1; }
+    | '(' Expr ')'    { $$ = $<s_val>2; }
 ;
 
 Literal
