@@ -27,7 +27,6 @@
     node *table[10] = { NULL };
 
     char *elementType = NULL;
-    int isLIT = 0, canAssign = 1,isArray = 0;
     char typeChange;
     
     /* Symbol table function - you can add new function if needed. */
@@ -88,7 +87,7 @@ StatementList
 ;
 
 Statement
-    : DeclarationStmt SEMICOLON  NEWLINE           { isArray = 0; }
+    : DeclarationStmt SEMICOLON  NEWLINE           
     | Expr SEMICOLON  NEWLINE 
     | IncDecExpr SEMICOLON  NEWLINE
     | PrintExpr SEMICOLON NEWLINE 
@@ -166,94 +165,42 @@ PrintExpr
 ;
 
 Expr
-    : Expr "LOR" ExprAnd    {   char *wrong = NULL;
-                                if (strcmp($<s_val>1, "bool") != 0)
-                                    wrong = $<s_val>1;
-                                else if (strcmp($<s_val>3, "bool") != 0)
-                                    wrong = $<s_val>3;
-                                if (wrong != NULL)
-                                    printf("error:%d: invalid operation: (operator LOR not defined on %s)\n",
-                                             yylineno, wrong);
-                                printf("LOR\n"); $$ = "bool";
-                                isLIT = 1;
-                            }
+    : Expr LOR ExprAnd    { printf("LOR\n"); $$ = "bool";}
     | ExprAnd
 ;
 
 ExprAnd
-    : Expr "LAND" ExprCompare    {   char *wrong = NULL;
-                                    if (strcmp($<s_val>1, "bool") != 0)
-                                        wrong = $<s_val>1;
-                                    else if (strcmp($<s_val>3, "bool") != 0)
-                                        wrong = $<s_val>3;
-                                    if (wrong != NULL)
-                                        printf("error:%d: invalid operation: (operator LAND not defined on %s)\n",
-                                                yylineno, wrong);
-                                    printf("LAND\n"); $$ = "bool";
-                                    isLIT = 1;
-                                }
+    : Expr LAND ExprCompare   { printf("LAND\n"); $$ = "bool";}
     | ExprCompare
 ;
 
 ExprCompare
-    : ExprCompare '<' ExprAdd        { printf("LSS"); $$ = "bool"; isLIT = 1; }
-    | ExprCompare '>' ExprAdd        { printf("GTR"); $$ = "bool"; isLIT = 1; }
-    | ExprCompare GEQ ExprAdd        { printf("GEQ"); $$ = "bool"; isLIT = 1; }
-    | ExprCompare LEQ ExprAdd        { printf("LEQ"); $$ = "bool"; isLIT = 1; }
-    | ExprCompare EQL ExprAdd        { printf("EQL"); $$ = "bool"; isLIT = 1; }
-    | ExprCompare NEQ ExprAdd        { printf("NEQ"); $$ = "bool"; isLIT = 1; }
+    : ExprCompare '<' ExprAdd        { printf("LSS"); $$ = "bool";  }
+    | ExprCompare '>' ExprAdd        { printf("GTR"); $$ = "bool";  }
+    | ExprCompare GEQ ExprAdd        { printf("GEQ"); $$ = "bool";  }
+    | ExprCompare LEQ ExprAdd        { printf("LEQ"); $$ = "bool";  }
+    | ExprCompare EQL ExprAdd        { printf("EQL"); $$ = "bool";  }
+    | ExprCompare NEQ ExprAdd        { printf("NEQ"); $$ = "bool";  }
     | ExprAdd
 ;
 
 ExprAdd
-    : ExprAdd '+' ExprMul     {if (strcmp($<s_val>1, $<s_val>3) == 0) $$ = $<s_val>1;
-                        else if (strcmp($<s_val>1, "undefined") != 0 && strcmp($<s_val>3, "undefined") != 0)
-                        printf("error:%d: invalid operation: %s (mismatched types %s and %s)\n",yylineno, $<s_val>2, $<s_val>1, $<s_val>3);
-                        printf("ADD\n");
-                        isLIT = 1;
-                        }
-    | ExprAdd '-' ExprMul     {if (strcmp($<s_val>1, $<s_val>3) == 0) $$ = $<s_val>1;
-                        else if (strcmp($<s_val>1, "undefined") != 0 && strcmp($<s_val>3, "undefined") != 0)
-                        printf("error:%d: invalid operation: %s (mismatched types %s and %s)\n",yylineno, $<s_val>2, $<s_val>1, $<s_val>3);
-                        printf("SUB\n");
-                        isLIT = 1;
-                        }   
+    : ExprAdd '+' ExprMul     {printf("ADD\n");$$ =  $<s_val>1;}
+    | ExprAdd '-' ExprMul     {printf("SUB\n");$$ =  $<s_val>1;}   
     | ExprMul                
 ;
 
 ExprMul
-    : ExprMul '*' ExprUnary        {
-                                printf("MUL\n");
-                                if (strcmp($<s_val>1, $<s_val>3) == 0)
-                                    $$ = $<s_val>1;
-                                isLIT = 1;
-                            }
-    | ExprMul '/' ExprUnary      {
-                                printf("QUO\n");
-                                if (strcmp($<s_val>1, $<s_val>3) == 0)
-                                    $$ = $<s_val>1;
-                                isLIT = 1;
-                            }
-    | ExprMul '%' ExprUnary      {   char *wrongType = NULL;
-                                if (strcmp($<s_val>1, "int") != 0)
-                                    wrongType = $<s_val>1;
-                                else if (strcmp($<s_val>3, "int") != 0)
-                                    wrongType = $<s_val>3;
-                                if (wrongType != NULL)
-                                    printf("error:%d: invalid operation: (operator REM not defined on %s)\n",
-                                            yylineno, wrongType);
-                                printf("REM\n");
-                                if (strcmp($<s_val>1, $<s_val>3) == 0)
-                                    $$ = $<s_val>1;
-                                isLIT = 1;
-                            }
+    : ExprMul '*' ExprUnary         {printf("MUL\n"); $$ = $<s_val>1;}
+    | ExprMul '/' ExprUnary         {printf("QUO\n"); $$ = $<s_val>1;}
+    | ExprMul '%' ExprUnary         {printf("REM\n"); $$ = $<s_val>1;}
     |ExprUnary 
 ;
 
 ExprUnary
-    : '+' ExprUnary                   { printf("POS"); $$ = $<s_val>2; isLIT = 1; }
-    | '-' ExprUnary                   { printf("NEG"); $$ = $<s_val>2; isLIT = 1; }
-    | '!' ExprUnary                   { printf("NOT"); $$ = $<s_val>2; isLIT = 1; }
+    : '+' ExprUnary                   { printf("POS"); $$ = $<s_val>2; }
+    | '-' ExprUnary                   { printf("NEG"); $$ = $<s_val>2; }
+    | '!' ExprUnary                   { printf("NOT"); $$ = $<s_val>2; }
     | Primary
 
 Primary
@@ -263,11 +210,11 @@ Primary
 ;
 
 Array
-    : Operand '[' Expr ']'      { $$ = elementType; isLIT = 0; }
+    : Operand '[' Expr ']'      { $$ = elementType; }
 ;
 
 ChangeType
-    : Type "(" Expr ")"     {   if(strcmp($<s_val>3, "int32") == 0) typeChange = 'I';
+    : Type '(' Expr ')'    {   if(strcmp($<s_val>3, "int32") == 0) typeChange = 'I';
                                 else{typeChange = 'F';}
                                 printf("%c to ",typeChange);
                                 if(strcmp($<s_val>1, "int32") == 0) typeChange = 'I';
@@ -276,18 +223,18 @@ ChangeType
                             }
 ;
 Operand 
-    : ID    {  node *symbol = lookup_symbol($<s_val>1);
-                if (symbol != NULL) {
-                    printf("IDENT (name=%s, address=%d)\n", $<s_val>1, symbol->address);
-                    $$ = symbol->type;
+    : ID    {   node *id = lookup_symbol($<s_val>1);
+                if (id != NULL) {
+                    printf("IDENT (name=%s, address=%d)\n", id->name, id->address);
+                    $$ = id->type;
                     if (strcmp($$, "array") == 0)
                         elementType = symbol->elementType;
-                        isLIT = 0;} 
-                    else {
-                        printf("error:%d: undefined: %s\n", yylineno+1, $<s_val>1);
-                        $$ = "undefined"; }
+                } 
+                else {
+                    printf("error:%d: undefined: %s\n", yylineno+1, $<s_val>1);
+                    $$ = "undefined"; }
             }
-    |Literal    { $$ = $<s_val>1; isLIT = 1; }
+    |Literal    { $$ = $<s_val>1; }
 ;
 
 Literal
