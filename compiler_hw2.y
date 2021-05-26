@@ -230,9 +230,10 @@ If
 ;
 
 If_block
-    : IF  '(' Expr ')' Block
-    | If_block ELSE Block
-    | If_block ELSE If_block
+    : IF  '(' Expr ')' Block 
+    | IF  '(' Expr ')' Block If_block
+    | ELSE Block
+    | ELSE If_block
 ;
 
 For
