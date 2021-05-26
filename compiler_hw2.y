@@ -97,7 +97,7 @@ Statement
     | Block NEWLINE 
     | While NEWLINE
     | If NEWLINE
-    | For NEWLINE
+    | For 
     | NEWLINE
 ;
 
@@ -230,11 +230,10 @@ If
 ;
 
 If_block
-    : IF  '(' Expr ')' Block 
-    | IF  '(' Expr ')' Block If_block
-    | ELSE Block
-    | ELSE If_block
-    | NEWLINE If_block
+    : IF  '(' Expr ')' Block NEWLINE
+    | IF  '(' Expr ')' Block If_block NEWLINE
+    | ELSE Block NEWLINE
+    | ELSE If_block NEWLINE
 ;
 
 For
