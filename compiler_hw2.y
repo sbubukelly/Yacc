@@ -224,7 +224,7 @@ ChangeType
                             }
 ;
 Operand 
-    : ID    {   node *id = lookup_symbol($<s_val>1);
+    : ID    {   struct table_node *id = lookup_symbol($<s_val>1);
                 if (id != NULL) {
                     printf("IDENT (name=%s, address=%d)\n", id->name, id->address);
                     $$ = id->type;
