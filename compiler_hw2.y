@@ -232,7 +232,7 @@ If
 ;
 
 If_block
-    : IF '(' Expr ')' Block
+    : IF NEWLINE '(' Expr ')' Block
 ;
 
 IfElse_block
