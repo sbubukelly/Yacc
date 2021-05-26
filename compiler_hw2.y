@@ -236,11 +236,11 @@ If_block
 ;
 
 IfElse_block
-    : IF '(' Expr ')' Block ELSE Block
+    : IF '(' Expr ')' Block NEWLINE ELSE Block
 ;
 
 IfElif_block
-    : IF '(' Expr ')' Block ELSE IF '(' Expr ')' Block
+    : IF '(' Expr ')' Block NEWLINE ELSE IF '(' Expr ')' Block
 ;
 
 For
