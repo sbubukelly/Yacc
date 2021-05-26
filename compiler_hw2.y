@@ -234,7 +234,7 @@ If_block
     | IF  '(' Expr ')' Block If_block
     | ELSE Block
     | ELSE If_block
-    | ELSE If_block NEWLINE
+    | NEWLINE If_block
 ;
 
 For
