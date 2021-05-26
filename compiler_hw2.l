@@ -58,8 +58,8 @@ newline		[\n]
 "*="        { return MUL_ASSIGN; }
 "/="        { return QUO_ASSIGN; }
 "%="        { return REM_ASSIGN; }
-"&&"        { return LAND; }
-"||"        { return LOR; }
+"&&"        { return AND; }
+"||"        { return OR; }
 "!"         { return '!'; }
 "("         { return '('; }
 ")"         { return ')'; }

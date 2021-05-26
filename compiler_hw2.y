@@ -166,12 +166,12 @@ PrintExpr
 ;
 
 Expr
-    : Expr LOR ExprAnd    { printf("LOR\n"); $$ = "bool";}
+    : Expr OR ExprAnd    { printf("OR\n"); $$ = "bool";}
     | ExprAnd
 ;
 
 ExprAnd
-    : Expr LAND ExprCompare   { printf("LAND\n"); $$ = "bool";}
+    : Expr AND ExprCompare   { printf("AND\n"); $$ = "bool";}
     | ExprCompare
 ;
 
