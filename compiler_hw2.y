@@ -242,7 +242,7 @@ For
 ;
 
 ForClause
-    : Assignment ';' Expr ';' IncDecExpr
+    : Assignment SEMICOLON Expr SEMICOLON IncDecExpr
 
 Block
     : '{' NEWLINE { create_symbol(); } StatementList '}'        { dump_symbol(); }
