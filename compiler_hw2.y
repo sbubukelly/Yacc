@@ -98,12 +98,12 @@ Statement
 ;
 
 Assignment 
-    :  Expr '=' Expr  {printf("ASSIGN\n"); $$ = $<s_val>1}
-    | Expr ADD_ASSIGN Expr  {printf("ADD_ASSIGN\n"); $$ = $<s_val>1}
-    | Expr SUB_ASSIGN Expr  {printf("SUB_ASSIGN\n"); $$ = $<s_val>1}
-    | Expr MUL_ASSIGN Expr  {printf("MUL_ASSIGN\n"); $$ = $<s_val>1}
-    | Expr QUO_ASSIGN Expr  {printf("QUO_ASSIGN\n"); $$ = $<s_val>1}
-    | Expr REM_ASSIGN Expr  {printf("REM_ASSIGN\n"); $$ = $<s_val>1}
+    :  Expr '=' Expr  {printf("ASSIGN\n"); $$ = $<s_val>1;}
+    | Expr ADD_ASSIGN Expr  {printf("ADD_ASSIGN\n"); $$ = $<s_val>1;}
+    | Expr SUB_ASSIGN Expr  {printf("SUB_ASSIGN\n"); $$ = $<s_val>1;}
+    | Expr MUL_ASSIGN Expr  {printf("MUL_ASSIGN\n"); $$ = $<s_val>1;}
+    | Expr QUO_ASSIGN Expr  {printf("QUO_ASSIGN\n"); $$ = $<s_val>1;}
+    | Expr REM_ASSIGN Expr  {printf("REM_ASSIGN\n"); $$ = $<s_val>1;}
                         
 
 ;
