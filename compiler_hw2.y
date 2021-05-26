@@ -252,7 +252,7 @@ ForClause
     : Assignment ';' Expr ';' IncDecExpr
 
 Block
-    : '{' { create_symbol(); } StatementList '}'        { dump_symbol(); }
+    : '{' NEWLINE { create_symbol(); } StatementList '}'        { dump_symbol(); }
 ;
 
 %%
