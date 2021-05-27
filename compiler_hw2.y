@@ -227,12 +227,12 @@ While
 
 If
     : If_block
+    | Else_block
     | ElseIf_block
 ;
 
 If_block
     : IF  '(' Expr ')' Block
-    | IF  '(' Expr ')' NEWLINE Else_block
     | IF  '(' Expr ')' Else_block
     | IF  '(' Expr ')' Block ElseIf_block
 ;
