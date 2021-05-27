@@ -276,7 +276,6 @@ static void create_symbol() {
 
 static void insert_symbol(char *name, char *type, char *elementType) {
 
-    struct table_node *cur = table[curScope];
     struct table_node *new = malloc(sizeof(struct table_node));
     new->name = name;
     new->type = type;
