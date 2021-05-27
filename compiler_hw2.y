@@ -233,7 +233,6 @@ If_block
     : IF  '(' Expr ')' If_block
     | NEWLINE If_block
     | Else_block
-    | NEWLINE
 ;
 
 Else_block
