@@ -96,7 +96,7 @@ Statement
     | Assignment SEMICOLON NEWLINE 
     | Block NEWLINE 
     | While NEWLINE
-    | If NEWLINE
+    | If 
     | For 
     | NEWLINE
 ;
