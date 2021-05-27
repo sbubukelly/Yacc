@@ -230,12 +230,15 @@ If
 ;
 
 If_block
-    : IF  '(' Expr ')' Block If_block
-    | IF  '(' Expr ')' Block If_block NEWLINE
-    | ELSE Block NEWLINE
-    | ELSE If_block NEWLINE If_block
-    | ELSE If_block If_block
+    : IF  '(' Expr ')' If_block
+    | NEWLINE If_block
+    | Else_block
     | NEWLINE
+;
+
+Else_block
+    : ELSE If_block
+    | Block If_block
 ;
 
 For
