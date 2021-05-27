@@ -96,7 +96,7 @@ Statement
     | Assignment SEMICOLON NEWLINE 
     | Block NEWLINE 
     | While NEWLINE
-    | If 
+    | If NEWLINE
     | For 
     | NEWLINE
 ;
@@ -227,17 +227,22 @@ While
 
 If
     : If_block
+    : ElseIf_block
 ;
 
 If_block
-    : IF  '(' Expr ')' If_block
-    | NEWLINE If_block
-    | Else_block
+    : IF  '(' Expr ')' Block
+    | IF  '(' Expr ')' NEWLINE Else_block
+    | IF  '(' Expr ')' Else_block
+    | IF  '(' Expr ')' Block ElseIf_block
+;
+
+ElseIf_block
+    : ELSE If_block
 ;
 
 Else_block
-    : ELSE If_block
-    | Block If_block
+    : ELSE Block
 ;
 
 For
