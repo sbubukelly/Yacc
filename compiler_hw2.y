@@ -227,7 +227,7 @@ While
 
 If
     : If_block
-    : ElseIf_block
+    | ElseIf_block
 ;
 
 If_block
