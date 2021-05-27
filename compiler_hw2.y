@@ -239,6 +239,7 @@ If_block
 
 ElseIf_block
     : ELSE If_block
+    | ELSE IF '(' Expr ')' NEWLINE Block
 ;
 
 Else_block
