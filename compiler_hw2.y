@@ -199,15 +199,10 @@ ChangeType
 ;
 Operand 
     : ID    {   struct table_node *id = lookup_symbol($<s_val>1);
-                if (id != NULL) {
-                    printf("IDENT (name=%s, address=%d)\n", id->name, id->address);
-                    $$ = id->type;
-                    if (strcmp($$, "array") == 0)
-                        elementType = id->elementType;
-                } 
-                else {
-                    printf("error:%d: undefined: %s\n", yylineno+1, $<s_val>1);
-                    $$ = "undefined"; }
+                printf("IDENT (name=%s, address=%d)\n", id->name, id->address);
+                $$ = id->type;
+                if (strcmp($$, "array") == 0)
+                    elementType = id->elementType;
             }
     |Literal    { $$ = $<s_val>1; }
     | '(' Expr ')'    { $$ = $<s_val>2; }
@@ -282,13 +277,6 @@ static void create_symbol() {
 static void insert_symbol(char *name, char *type, char *elementType) {
 
     struct table_node *cur = table[curScope];
-    while (cur != NULL) {
-        if(strcmp(cur->name, name) == 0) {
-            printf("error:%d: %s redeclared in this block. previous declaration at line %d\n", yylineno, name, cur->lineno);
-            return;
-        }
-        cur = cur->next;
-    }
     struct table_node *new = malloc(sizeof(struct table_node));
     new->name = name;
     new->type = type;
