@@ -12,21 +12,19 @@
     {
         printf("error:%d: %s\n", yylineno, s);
     }
-    
-    int curScope = 0;
-    int curAddress = 0;
 
-    // typedef struct table_node node;
-    struct table_node {
+    struct Node {
         char *name;
         char *type;
         int address;
         int lineno;
         char *elementType;
-        struct table_node *next;
+        struct Node *next;
     };
-    struct table_node *table[20] = { NULL };
 
+    struct Node *table[30] = { NULL };
+    int Scope = 0;
+    int AddressNum = 0;
     char *elementType = NULL;
     char typeChange;
     
@@ -271,58 +269,57 @@ int main(int argc, char *argv[])
     return 0;
 }
 static void create_symbol() {
-    curScope++;
+    Scope++;
 }
 
 static void insert_symbol(char *name, char *type, char *elementType) {
+    struct Node* new_node = (struct Node*) malloc(sizeof(struct Node));
+    struct Node *last = table[Scope];
+    new_node->name = name;
+    new_node->type = type;
+    new_node->elementType = elementType;
+    new_node->address = AddressNum++;
+    new_node->lineno = yylineno;
+    new_node->next = NULL;
 
-    struct table_node *new = malloc(sizeof(struct table_node));
-    new->name = name;
-    new->type = type;
-    new->address = curAddress++;
-    new->lineno = yylineno;
-    new->elementType = elementType;
-    new->next = NULL;
-    if(table[curScope] == NULL)
-        table[curScope] = new;
+    if(table[Scope] == NULL)
+        table[Scope] = new_node;
     else {
-        struct table_node *cur = table[curScope];
-        while(cur->next) cur = cur->next;
-        cur->next = new;
+       while (last->next != NULL)
+        last = last->next;
+        last->next = new_node;
     }
     
-    printf("> Insert {%s} into symbol table (scope level: %d)\n", name, curScope);
+    printf("> Insert {%s} into symbol table (scope level: %d)\n", name, Scope);
 }
 
 static struct table_node* lookup_symbol(char *name) {
-
-    int tmp = curScope;
-    while (tmp >= 0) {
-        struct table_node *cur = table[tmp--];
-        while (cur != NULL) {
-            if (strcmp(cur->name, name) == 0)
-                return cur;
-            cur = cur->next;
+    int cur = Scope;
+    for(i = cur;i >= 0;i ++){
+        struct Node *node = table[i];
+        while(node != NULL){
+            if (strcmp(node->name, name) == 0)
+                return node;
+            node = node->next;
         }
     }
-
     return NULL;
 }
 
 static void dump_symbol() {
 
-    printf("> Dump symbol table (scope level: %d)\n", curScope);
-    printf("%-10s%-10s%-10s%-10s%-10s%s\n",
-           "Index", "Name", "Type", "Address", "Lineno", "Element type");
+    printf("> Dump symbol table (scope level: %d)\n", Scope);
+    printf("%-10s%-10s%-10s%-10s%-10s%s\n", "Index", "Name", "Type", "Address", "Lineno",
+    "Element type");
     int index = 0;
-    struct table_node *cur = table[curScope];
-    while (cur != NULL) {
-        printf("%-10d%-10s%-10s%-10d%-10d%s\n",
-                index++, cur->name, cur->type, cur->address, cur->lineno, cur->elementType);
-        struct table_node *tmp = cur;
-        cur = cur->next;
+    struct Node *node = table[Scope];
+    while (node != NULL) {
+        printf("%-10d%-10s%-10s%-10d%-10d%s\n",index++, node->name, node->type, node->address, node->lineno, node->elementType);
+        struct table_node *tmp = node;
+        node = node->next;
         free(tmp);
     }
     table[curScope--] = NULL;
+    
 }
  
