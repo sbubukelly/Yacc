@@ -293,6 +293,7 @@ static void insert_symbol(char *name, char *type, char *elementType) {
     }
     if(exist){
         printf("error:%d: %s redeclared in this block. previous declaration at line %d",yylineno,name,current->lineno);
+        return;
     }
 
     struct Node* new_node = (struct Node*) malloc(sizeof(struct Node));
