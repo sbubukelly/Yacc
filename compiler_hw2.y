@@ -292,7 +292,7 @@ static void insert_symbol(char *name, char *type, char *elementType) {
         current = current->next;
     }
     if(exist){
-        printf("error:%d: %c redeclared in this block. previous declaration at line %d",yylineno,name,current->lineno)
+        printf("error:%d: %s redeclared in this block. previous declaration at line %d",yylineno,name,current->lineno);
     }
 
     struct Node* new_node = (struct Node*) malloc(sizeof(struct Node));
@@ -327,7 +327,7 @@ static struct Node* lookup_symbol(char *name) {
             node = node->next;
         }
     }
-    printf("error:%d: undefined: %c",yylineno,name);
+    printf("error:%d: undefined: %s",yylineno,name);
     return NULL;
 }
 
