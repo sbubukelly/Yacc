@@ -31,7 +31,7 @@
     /* Symbol table function - you can add new function if needed. */
     static void create_symbol();
     static void insert_symbol(char *name, char *type, char *elementType);
-    static struct table_node* lookup_symbol(char *name);
+    static struct Node* lookup_symbol(char *name);
     static void dump_symbol();
 
 %}
@@ -196,11 +196,17 @@ ChangeType
                             }
 ;
 Operand 
-    : ID    {   struct table_node *id = lookup_symbol($<s_val>1);
-                printf("IDENT (name=%s, address=%d)\n", id->name, id->address);
-                $$ = id->type;
-                if (strcmp($$, "array") == 0)
-                    elementType = id->elementType;
+    : ID    {   struct Node *id = lookup_symbol($<s_val>1);
+                if(id != NULL){
+                    printf("IDENT (name=%s, address=%d)\n", id->name, id->address);
+                    $$ = id->type;
+                    if (strcmp($$, "array") == 0)
+                        elementType = id->elementType;
+                }
+                else{
+                    $$ = "none";
+                }
+                
             }
     |Literal    { $$ = $<s_val>1; }
     | '(' Expr ')'    { $$ = $<s_val>2; }
@@ -268,13 +274,28 @@ int main(int argc, char *argv[])
     fclose(yyin);
     return 0;
 }
+
+
 static void create_symbol() {
     Scope++;
 }
 
 static void insert_symbol(char *name, char *type, char *elementType) {
+    struct Node *current = table[Scope];
+    int exist = false;
+    while (current != NULL)
+    {
+        if (strcmp(current->name, name) == 0){
+            exist = true;
+            break;
+        }
+        current = current->next;
+    }
+    if(exist){
+        printf("error:%d: %c redeclared in this block. previous declaration at line %d",lineno,name,)
+    }
+
     struct Node* new_node = (struct Node*) malloc(sizeof(struct Node));
-    struct Node *last = table[Scope];
     new_node->name = name;
     new_node->type = type;
     new_node->elementType = elementType;
@@ -285,15 +306,18 @@ static void insert_symbol(char *name, char *type, char *elementType) {
     if(table[Scope] == NULL)
         table[Scope] = new_node;
     else {
-       while (last->next != NULL)
-        last = last->next;
-        last->next = new_node;
+        struct Node *current = table[Scope];
+        while (current->next != NULL)
+        {
+            current = current->next;
+        }
+        current->next = new_node;
     }
     
     printf("> Insert {%s} into symbol table (scope level: %d)\n", name, Scope);
 }
 
-static struct table_node* lookup_symbol(char *name) {
+static struct Node* lookup_symbol(char *name) {
     int cur = Scope;
     for(i = cur;i >= 0;i ++){
         struct Node *node = table[i];
@@ -303,6 +327,7 @@ static struct table_node* lookup_symbol(char *name) {
             node = node->next;
         }
     }
+    printf("error:%d: undefined: %c",lineno,name);
     return NULL;
 }
 
@@ -315,11 +340,11 @@ static void dump_symbol() {
     struct Node *node = table[Scope];
     while (node != NULL) {
         printf("%-10d%-10s%-10s%-10d%-10d%s\n",index++, node->name, node->type, node->address, node->lineno, node->elementType);
-        struct table_node *tmp = node;
+        struct Node *tmp = node;
         node = node->next;
         free(tmp);
     }
-    table[curScope--] = NULL;
+    table[Scope--] = NULL;
     
 }
  
