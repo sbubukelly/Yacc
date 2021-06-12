@@ -319,7 +319,7 @@ static void insert_symbol(char *name, char *type, char *elementType) {
 
 static struct Node* lookup_symbol(char *name) {
     int cur = Scope;
-    for(i = cur;i >= 0;i ++){
+    for(int i = cur;i >= 0;i ++){
         struct Node *node = table[i];
         while(node != NULL){
             if (strcmp(node->name, name) == 0)
