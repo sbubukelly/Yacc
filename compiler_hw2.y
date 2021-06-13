@@ -179,7 +179,7 @@ ExprUnary
 Primary
     : Operand { $$=$1;}
     | Array { $$=$1;}
-    | ChangeType {$$=$2;}
+    | ChangeType {$$=$1;}
 ;
 
 Array
