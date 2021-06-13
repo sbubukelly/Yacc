@@ -69,7 +69,7 @@
 %type <s_val> Type TypeName INT FLOAT STRING BOOL SEMICOLON
 %type <s_val> Expr ExprAdd ExprAnd ExprCompare ExprMul ExprUnary Assignment
 %type <s_val> PrintExpr Literal IncDecExpr Operand Primary Array ChangeType
-// %type <s_val> While Block If If_block IfElse_block IfElif_block For ForClause
+%type <s_val> While Block If If_block ElseIf_block Else_block For ForClause
 
 /* Yacc will start at this nonterminal */
 %start Program
