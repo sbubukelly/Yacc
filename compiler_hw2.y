@@ -66,10 +66,10 @@
 %token <*s_val> ID
 
 /* Nonterminal with return, which need to sepcify type */
-%type <s_val> Type TypeName INT FLOAT STRING BOOL SEMICOLON
+%type <s_val> Type TypeName INT FLOAT STRING BOOL
 %type <s_val> Expr ExprAdd ExprAnd ExprCompare ExprMul ExprUnary Assignment
 %type <s_val> PrintExpr Literal IncDecExpr Operand Primary Array ChangeType
-%type <s_val> While Block If If_block ElseIf_block Else_block For ForClause
+// %type <s_val> While Block If If_block ElseIf_block Else_block For ForClause
 
 /* Yacc will start at this nonterminal */
 %start Program
@@ -118,19 +118,19 @@ DeclarationStmt
 ;
 
 Type
-    : TypeName
+    : TypeName {$$=$1;}
 ;
 
 TypeName
-    : INT
-    | FLOAT
-    | STRING
-    | BOOL
+    : INT {$$="int";}
+    | FLOAT {$$="float";}
+    | STRING {$$="string";}
+    | BOOL {$$="bool";}
 ;
 
 IncDecExpr
-    : Expr INC       { printf("INC\n"); }
-    | Expr DEC       { printf("DEC\n"); }
+    : Expr INC       { printf("INC\n"); $$=$1; }
+    | Expr DEC       { printf("DEC\n"); $$=$1;}
 ;
 
 PrintExpr
@@ -139,12 +139,12 @@ PrintExpr
 
 Expr
     : Expr OR ExprAnd    { printf("OR\n"); $$ = "bool";}
-    | ExprAnd
+    | ExprAnd {$$=$1;}
 ;
 
 ExprAnd
     : ExprAnd AND ExprCompare   { printf("AND\n"); $$ = "bool";}
-    | ExprCompare
+    | ExprCompare {$$=$1;}
 ;
 
 ExprCompare
@@ -154,32 +154,32 @@ ExprCompare
     | ExprCompare LEQ ExprAdd        { printf("LEQ\n"); $$ = "bool";  }
     | ExprCompare EQL ExprAdd        { printf("EQL\n"); $$ = "bool";  }
     | ExprCompare NEQ ExprAdd        { printf("NEQ\n"); $$ = "bool";  }
-    | ExprAdd
+    | ExprAdd {$$=$1;}
 ;
 
 ExprAdd
     : ExprAdd '+' ExprMul     {printf("ADD\n");$$ =  $<s_val>1;}
     | ExprAdd '-' ExprMul     {printf("SUB\n");$$ =  $<s_val>1;}   
-    | ExprMul                
+    | ExprMul {$$=$1;}               
 ;
 
 ExprMul
     : ExprMul '*' ExprUnary         {printf("MUL\n"); $$ = $<s_val>1;}
     | ExprMul '/' ExprUnary         {printf("QUO\n"); $$ = $<s_val>1;}
     | ExprMul '%' ExprUnary         {printf("REM\n"); $$ = $<s_val>1;}
-    |ExprUnary 
+    |ExprUnary {$$=$1;}
 ;
 
 ExprUnary
     : '+' ExprUnary                   { printf("POS\n"); $$ = $<s_val>2; }
     | '-' ExprUnary                   { printf("NEG\n"); $$ = $<s_val>2; }
     | '!' ExprUnary                   { printf("NOT\n"); $$ = $<s_val>2; }
-    | Primary
+    | Primary {$$=$1;}
 
 Primary
-    : Operand
-    | Array
-    | ChangeType
+    : Operand { $$=$1;}
+    | Array { $$=$1;}
+    | ChangeType {$$=$2;}
 ;
 
 Array
@@ -193,6 +193,7 @@ ChangeType
                                 if(strcmp($<s_val>2, "int") == 0) typeChange = 'I';
                                 else{typeChange = 'F';}
                                 printf("%c\n",typeChange);
+                                $$ = $2;
                             }
 ;
 Operand 
