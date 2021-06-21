@@ -245,7 +245,7 @@ Primary
 ;
 
 Array
-    : Operand '[' Expr ']'      { $$ = elementType; }
+    : Operand '[' Expr ']'      { $$ = elementType; assignAble = 1 }
 ;
 
 ChangeType
@@ -356,7 +356,7 @@ static void insert_symbol(char *name, char *type, char *elementType) {
         current = current->next;
     }
     if(exist){
-        printf("error:%d: %s redeclared in this block. previous declaration at line %d",yylineno,name,current->lineno);
+        printf("error:%d: %s redeclared in this block. previous declaration at line %d\n",yylineno,name,current->lineno);
         return;
     }
 
@@ -392,7 +392,7 @@ static struct Node* lookup_symbol(char *name) {
             node = node->next;
         }
     }
-    printf("error:%d: undefined: %s",yylineno,name);
+    printf("error:%d: undefined: %s\n",yylineno,name);
     return NULL;
 }
 
