@@ -27,6 +27,7 @@
     int AddressNum = 0;
     char *elementType = NULL;
     char typeChange;
+    int assignAble = 1,assigned = 1;
     
     /* Symbol table function - you can add new function if needed. */
     static void create_symbol();
@@ -100,15 +101,75 @@ Statement
 ;
 
 Assignment 
-    :  Expr '=' Expr  {printf("ASSIGN\n"); $$ = $<s_val>1;}
-    | Expr ADD_ASSIGN Expr  {printf("ADD_ASSIGN\n"); $$ = $<s_val>1;}
-    | Expr SUB_ASSIGN Expr  {printf("SUB_ASSIGN\n"); $$ = $<s_val>1;}
-    | Expr MUL_ASSIGN Expr  {printf("MUL_ASSIGN\n"); $$ = $<s_val>1;}
-    | Expr QUO_ASSIGN Expr  {printf("QUO_ASSIGN\n"); $$ = $<s_val>1;}
-    | Expr REM_ASSIGN Expr  {printf("REM_ASSIGN\n"); $$ = $<s_val>1;}
-                        
-
+    : AssignedExpr '=' Expr  {  if(assigned == 0){
+                                    printf("error:%d: cannot assign to %s",yylineno,$<s_val>1)
+                                    assigned = 1;
+                                }
+                                if(strcmp($<s_val>1, $<s_val>3) != 0){
+                                    if(strcmp($<s_val>1, "none") != 0 && strcmp($<s_val>3, "none") != 0){
+                                        printf("error:%d: invalid operation: ASSIGN (mismatched types %s and %s)",yylineno,$<s_val>1,$<s_val>3);
+                                    }
+                                }
+                                printf("ASSIGN\n"); $$ = $<s_val>1;}
+    | AssignedExpr ADD_ASSIGN Expr  {   if(assigned == 0){
+                                            printf("error:%d: cannot assign to %s",yylineno,$<s_val>1)
+                                            assigned = 1;
+                                        }
+                                        if(strcmp($<s_val>1, $<s_val>3) != 0){
+                                            if(strcmp($<s_val>1, "none") != 0 && strcmp($<s_val>3, "none") != 0){
+                                                printf("error:%d: invalid operation: ADD_ASSIGN (mismatched types %s and %s)",yylineno,$<s_val>1,$<s_val>3);
+                                            }
+                                        }
+                                        printf("ADD_ASSIGN\n"); $$ = $<s_val>1;
+                                    }
+    | AssignedExpr SUB_ASSIGN Expr  {   if(assigned == 0){
+                                            printf("error:%d: cannot assign to %s",yylineno,$<s_val>1)
+                                            assigned = 1;
+                                        }
+                                        if(strcmp($<s_val>1, $<s_val>3) != 0){
+                                            if(strcmp($<s_val>1, "none") != 0 && strcmp($<s_val>3, "none") != 0){
+                                                printf("error:%d: invalid operation: SUB_ASSIGN (mismatched types %s and %s)",yylineno,$<s_val>1,$<s_val>3);
+                                            }
+                                        }
+                                        printf("SUB_ASSIGN\n"); $$ = $<s_val>1;
+                                    }
+    | AssignedExpr MUL_ASSIGN Expr  {   if(assigned == 0){
+                                            printf("error:%d: cannot assign to %s",yylineno,$<s_val>1)
+                                            assigned = 1;
+                                        }
+                                        if(strcmp($<s_val>1, $<s_val>3) != 0){
+                                            if(strcmp($<s_val>1, "none") != 0 && strcmp($<s_val>3, "none") != 0){
+                                                printf("error:%d: invalid operation: MUL_ASSIGN (mismatched types %s and %s)",yylineno,$<s_val>1,$<s_val>3);
+                                            }
+                                        }
+                                        printf("MUL_ASSIGN\n"); $$ = $<s_val>1;
+                                    }
+    | AssignedExpr QUO_ASSIGN Expr  {   if(assigned == 0){
+                                            printf("error:%d: cannot assign to %s",yylineno,$<s_val>1)
+                                            assigned = 1;
+                                        }
+                                        if(strcmp($<s_val>1, $<s_val>3) != 0){
+                                            if(strcmp($<s_val>1, "none") != 0 && strcmp($<s_val>3, "none") != 0){
+                                                printf("error:%d: invalid operation: QUO_ASSIGN (mismatched types %s and %s)",yylineno,$<s_val>1,$<s_val>3);
+                                            }
+                                        }
+                                        printf("QUO_ASSIGN\n"); $$ = $<s_val>1;
+                                    }
+    | AssignedExpr REM_ASSIGN Expr  {   if(assigned == 0){
+                                            printf("error:%d: cannot assign to %s",yylineno,$<s_val>1)
+                                            assigned = 1;
+                                        }
+                                        if(strcmp($<s_val>1, $<s_val>3) != 0){
+                                            if(strcmp($<s_val>1, "none") != 0 && strcmp($<s_val>3, "none") != 0){
+                                                printf("error:%d: invalid operation: REM_ASSIGN (mismatched types %s and %s)",yylineno,$<s_val>1,$<s_val>3);
+                                            }
+                                        }
+                                        printf("REM_ASSIGN\n"); $$ = $<s_val>1;
+                                    }
 ;
+
+AssignedExpr
+    : Expr {if(assignAble == 0){assigned = 0;}}
 
 DeclarationStmt
     : Type ID                  {insert_symbol($<s_val>2, $<s_val>1, "-");}
@@ -129,8 +190,8 @@ TypeName
 ;
 
 IncDecExpr
-    : Expr INC       { printf("INC\n"); $$=$1; }
-    | Expr DEC       { printf("DEC\n"); $$=$1;}
+    : Expr INC       { printf("INC\n");assignAble = 0; $$=$1;}
+    | Expr DEC       { printf("DEC\n");assignAble = 0; $$=$1;}
 ;
 
 PrintExpr
@@ -138,42 +199,42 @@ PrintExpr
 ;
 
 Expr
-    : Expr OR ExprAnd    { printf("OR\n"); $$ = "bool";}
+    : Expr OR ExprAnd    { printf("OR\n"); assignAble = 0;$$ = "bool";}
     | ExprAnd {$$=$1;}
 ;
 
 ExprAnd
-    : ExprAnd AND ExprCompare   { printf("AND\n"); $$ = "bool";}
+    : ExprAnd AND ExprCompare   { printf("AND\n");assignAble = 0; $$ = "bool";}
     | ExprCompare {$$=$1;}
 ;
 
 ExprCompare
-    : ExprCompare '<' ExprAdd        { printf("LSS\n"); $$ = "bool";  }
-    | ExprCompare '>' ExprAdd        { printf("GTR\n"); $$ = "bool";  }
-    | ExprCompare GEQ ExprAdd        { printf("GEQ\n"); $$ = "bool";  }
-    | ExprCompare LEQ ExprAdd        { printf("LEQ\n"); $$ = "bool";  }
-    | ExprCompare EQL ExprAdd        { printf("EQL\n"); $$ = "bool";  }
-    | ExprCompare NEQ ExprAdd        { printf("NEQ\n"); $$ = "bool";  }
+    : ExprCompare '<' ExprAdd        { printf("LSS\n");assignAble = 0; $$ = "bool";  }
+    | ExprCompare '>' ExprAdd        { printf("GTR\n");assignAble = 0; $$ = "bool";  }
+    | ExprCompare GEQ ExprAdd        { printf("GEQ\n");assignAble = 0; $$ = "bool";  }
+    | ExprCompare LEQ ExprAdd        { printf("LEQ\n");assignAble = 0; $$ = "bool";  }
+    | ExprCompare EQL ExprAdd        { printf("EQL\n");assignAble = 0; $$ = "bool";  }
+    | ExprCompare NEQ ExprAdd        { printf("NEQ\n");assignAble = 0; $$ = "bool";  }
     | ExprAdd {$$=$1;}
 ;
 
 ExprAdd
-    : ExprAdd '+' ExprMul     {printf("ADD\n");$$ =  $<s_val>1;}
-    | ExprAdd '-' ExprMul     {printf("SUB\n");$$ =  $<s_val>1;}   
+    : ExprAdd '+' ExprMul     {printf("ADD\n");assignAble = 0;$$ =  $<s_val>1;}
+    | ExprAdd '-' ExprMul     {printf("SUB\n");assignAble = 0;$$ =  $<s_val>1;}   
     | ExprMul {$$=$1;}               
 ;
 
 ExprMul
-    : ExprMul '*' ExprUnary         {printf("MUL\n"); $$ = $<s_val>1;}
-    | ExprMul '/' ExprUnary         {printf("QUO\n"); $$ = $<s_val>1;}
-    | ExprMul '%' ExprUnary         {printf("REM\n"); $$ = $<s_val>1;}
+    : ExprMul '*' ExprUnary         {printf("MUL\n");assignAble = 0; $$ = $<s_val>1;}
+    | ExprMul '/' ExprUnary         {printf("QUO\n");assignAble = 0; $$ = $<s_val>1;}
+    | ExprMul '%' ExprUnary         {printf("REM\n");assignAble = 0; $$ = $<s_val>1;}
     |ExprUnary {$$=$1;}
 ;
 
 ExprUnary
-    : '+' ExprUnary                   { printf("POS\n"); $$ = $<s_val>2; }
-    | '-' ExprUnary                   { printf("NEG\n"); $$ = $<s_val>2; }
-    | '!' ExprUnary                   { printf("NOT\n"); $$ = $<s_val>2; }
+    : '+' ExprUnary                   { printf("POS\n");assignAble = 0; $$ = $<s_val>2; }
+    | '-' ExprUnary                   { printf("NEG\n");assignAble = 0; $$ = $<s_val>2; }
+    | '!' ExprUnary                   { printf("NOT\n");assignAble = 0; $$ = $<s_val>2; }
     | Primary {$$=$1;}
 
 Primary
@@ -203,13 +264,14 @@ Operand
                     $$ = id->type;
                     if (strcmp($$, "array") == 0)
                         elementType = id->elementType;
+                        assignAble = 1;
                 }
                 else{
                     $$ = "none";
                 }
                 
             }
-    |Literal    { $$ = $<s_val>1; }
+    | Literal    { $$ = $<s_val>1; assignAble = 0;}
     | '(' Expr ')'    { $$ = $<s_val>2; }
 ;
 
