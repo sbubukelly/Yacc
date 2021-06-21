@@ -172,7 +172,7 @@ AssignedExpr
     : Expr {if(assignAble == 0){assigned = 0;}}
 
 DeclarationStmt
-    : Type ID                  {insert_symbol($<s_val>2, $<s_val>1, "-");}
+    : Type ID                   {insert_symbol($<s_val>2, $<s_val>1, "-");}
     | Type ID '=' Expr          {insert_symbol($<s_val>2, $<s_val>1, "-");}
     | Type ID '[' Expr ']'      {insert_symbol($<s_val>2,"array", $<s_val>1);assignAble = 1;}
     | Type ID '[' Expr ']' '=' Expr     {insert_symbol($<s_val>2,"array", $<s_val>1);assignAble = 1;}
@@ -200,18 +200,30 @@ PrintExpr
 ;
 
 Expr
-    : Expr OR ExprAnd    { printf("OR\n"); assignAble = 0;$$ = "bool";}
+    : Expr OR ExprAnd    {  if(strcmp($<s_val>1,"bool") != 0){
+                                printf("error:%d: invalid operation: (operator OR not defined on %s)\n",yylineno,$<s_val>1);
+                            }
+                            else if(strcmp($<s_val>3,"bool") != 0){
+                                printf("error:%d: invalid operation: (operator OR not defined on %s)\n",yylineno,$<s_val>3);
+                            }
+                            printf("OR\n"); assignAble = 0;$$ = "bool";}
     | ExprAnd {$$=$1;}
 ;
 
 ExprAnd
-    : ExprAnd AND ExprCompare   { printf("AND\n");assignAble = 0; $$ = "bool";}
+    : ExprAnd AND ExprCompare   {   if(strcmp($<s_val>1,"bool") != 0){
+                                        printf("error:%d: invalid operation: (operator AND not defined on %s)\n",yylineno,$<s_val>1);
+                                    }
+                                    else if(strcmp($<s_val>3,"bool") != 0){
+                                        printf("error:%d: invalid operation: (operator AND not defined on %s)\n",yylineno,$<s_val>3);
+                                    }
+                                    printf("AND\n");assignAble = 0; $$ = "bool";}
     | ExprCompare {$$=$1;}
 ;
 
 ExprCompare
-    : ExprCompare '<' ExprAdd        { printf("LSS\n");assignAble = 0; $$ = "bool";  }
-    | ExprCompare '>' ExprAdd        { printf("GTR\n");assignAble = 0; $$ = "bool";  }
+    : ExprCompare '<' ExprAdd        { printf("LSS\n");assignAble = 0; $$ = "bool"; }
+    | ExprCompare '>' ExprAdd        { printf("GTR\n");assignAble = 0; $$ = "bool";   }
     | ExprCompare GEQ ExprAdd        { printf("GEQ\n");assignAble = 0; $$ = "bool";  }
     | ExprCompare LEQ ExprAdd        { printf("LEQ\n");assignAble = 0; $$ = "bool";  }
     | ExprCompare EQL ExprAdd        { printf("EQL\n");assignAble = 0; $$ = "bool";  }
@@ -220,15 +232,31 @@ ExprCompare
 ;
 
 ExprAdd
-    : ExprAdd '+' ExprMul     {printf("ADD\n");assignAble = 0;$$ =  $<s_val>1;}
-    | ExprAdd '-' ExprMul     {printf("SUB\n");assignAble = 0;$$ =  $<s_val>1;}   
+    : ExprAdd '+' ExprMul     { if(strcmp($<s_val>1, $<s_val>3) != 0){
+                                    if(strcmp($<s_val>1, "none") != 0 && strcmp($<s_val>3, "none") != 0){
+                                        printf("error:%d: invalid operation: ADD (mismatched types %s and %s)\n",yylineno,$<s_val>1,$<s_val>3);
+                                    }
+                                }
+                                printf("ADD\n");assignAble = 0;$$ =  $<s_val>1;}
+    | ExprAdd '-' ExprMul     { if(strcmp($<s_val>1, $<s_val>3) != 0){
+                                    if(strcmp($<s_val>1, "none") != 0 && strcmp($<s_val>3, "none") != 0){
+                                        printf("error:%d: invalid operation: SUB (mismatched types %s and %s)\n",yylineno,$<s_val>1,$<s_val>3);
+                                    }
+                                }
+                                printf("SUB\n");assignAble = 0;$$ =  $<s_val>1;}   
     | ExprMul {$$=$1;}               
 ;
 
 ExprMul
     : ExprMul '*' ExprUnary         {printf("MUL\n");assignAble = 0; $$ = $<s_val>1;}
     | ExprMul '/' ExprUnary         {printf("QUO\n");assignAble = 0; $$ = $<s_val>1;}
-    | ExprMul '%' ExprUnary         {printf("REM\n");assignAble = 0; $$ = $<s_val>1;}
+    | ExprMul '%' ExprUnary         {   if(strcmp($<s_val>1,"bool") != 0){
+                                            printf("error:%d: invalid operation: (operator REM not defined on %s)\n",yylineno,$<s_val>1);
+                                        }
+                                        else if(strcmp($<s_val>3,"bool") != 0){
+                                            printf("error:%d: invalid operation: (operator REM not defined on %s)\n",yylineno,$<s_val>3);
+                                        }
+                                        printf("REM\n");assignAble = 0; $$ = $<s_val>1;}
     |ExprUnary {$$=$1;}
 ;
 
@@ -285,7 +313,10 @@ Literal
 ;
 
 While
-    : WHILE '(' Expr ')' Block
+    : WHILE '(' Expr ')'    {   if(strcmp($<s_val>3, "bool") != 0){
+                                    printf("error:%d: non-bool (type %s) used as for condition",yylineno + 1,$<s_val>3)
+                                }
+                            } Block      
 ;
 
 If
@@ -295,14 +326,26 @@ If
 ;
 
 If_block
-    : IF  '(' Expr ')' Block
-    | IF  '(' Expr ')' Else_block
-    | IF  '(' Expr ')' Block ElseIf_block
+    : IF  '(' Expr ')' {   if(strcmp($<s_val>3, "bool") != 0){
+                                    printf("error:%d: non-bool (type %s) used as for condition",yylineno + 1,$<s_val>3)
+                                }
+                            } Block
+    | IF  '(' Expr ')' {   if(strcmp($<s_val>3, "bool") != 0){
+                                    printf("error:%d: non-bool (type %s) used as for condition",yylineno + 1,$<s_val>3)
+                                }
+                            }Else_block
+    | IF  '(' Expr ')'{   if(strcmp($<s_val>3, "bool") != 0){
+                                    printf("error:%d: non-bool (type %s) used as for condition",yylineno + 1,$<s_val>3)
+                                }
+                            } Block ElseIf_block
 ;
 
 ElseIf_block
     : ELSE If_block
-    | ELSE IF '(' Expr ')' NEWLINE Block Else_block
+    | ELSE IF '(' Expr ')' {   if(strcmp($<s_val>3, "bool") != 0){
+                                    printf("error:%d: non-bool (type %s) used as for condition",yylineno + 1,$<s_val>3)
+                                }
+                            }NEWLINE Block Else_block
 ;
 
 Else_block
