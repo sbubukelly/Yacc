@@ -102,66 +102,66 @@ Statement
 
 Assignment 
     : AssignedExpr '=' Expr  {  if(assigned == 0){
-                                    printf("error:%d: cannot assign to %s",yylineno,$<s_val>1);
+                                    printf("error:%d: cannot assign to %s\n",yylineno,$<s_val>1);
                                     assigned = 1;
                                 }
                                 if(strcmp($<s_val>1, $<s_val>3) != 0){
                                     if(strcmp($<s_val>1, "none") != 0 && strcmp($<s_val>3, "none") != 0){
-                                        printf("error:%d: invalid operation: ASSIGN (mismatched types %s and %s)",yylineno,$<s_val>1,$<s_val>3);
+                                        printf("error:%d: invalid operation: ASSIGN (mismatched types %s and %s)\n",yylineno,$<s_val>1,$<s_val>3);
                                     }
                                 }
                                 printf("ASSIGN\n"); $$ = $<s_val>1;}
     | AssignedExpr ADD_ASSIGN Expr  {   if(assigned == 0){
-                                            printf("error:%d: cannot assign to %s",yylineno,$<s_val>1);
+                                            printf("error:%d: cannot assign to %s\n",yylineno,$<s_val>1);
                                             assigned = 1;
                                         }
                                         if(strcmp($<s_val>1, $<s_val>3) != 0){
                                             if(strcmp($<s_val>1, "none") != 0 && strcmp($<s_val>3, "none") != 0){
-                                                printf("error:%d: invalid operation: ADD_ASSIGN (mismatched types %s and %s)",yylineno,$<s_val>1,$<s_val>3);
+                                                printf("error:%d: invalid operation: ADD_ASSIGN (mismatched types %s and %s)\n",yylineno,$<s_val>1,$<s_val>3);
                                             }
                                         }
                                         printf("ADD_ASSIGN\n"); $$ = $<s_val>1;
                                     }
     | AssignedExpr SUB_ASSIGN Expr  {   if(assigned == 0){
-                                            printf("error:%d: cannot assign to %s",yylineno,$<s_val>1);
+                                            printf("error:%d: cannot assign to %s\n",yylineno,$<s_val>1);
                                             assigned = 1;
                                         }
                                         if(strcmp($<s_val>1, $<s_val>3) != 0){
                                             if(strcmp($<s_val>1, "none") != 0 && strcmp($<s_val>3, "none") != 0){
-                                                printf("error:%d: invalid operation: SUB_ASSIGN (mismatched types %s and %s)",yylineno,$<s_val>1,$<s_val>3);
+                                                printf("error:%d: invalid operation: SUB_ASSIGN (mismatched types %s and %s)\n",yylineno,$<s_val>1,$<s_val>3);
                                             }
                                         }
                                         printf("SUB_ASSIGN\n"); $$ = $<s_val>1;
                                     }
     | AssignedExpr MUL_ASSIGN Expr  {   if(assigned == 0){
-                                            printf("error:%d: cannot assign to %s",yylineno,$<s_val>1);
+                                            printf("error:%d: cannot assign to %s\n",yylineno,$<s_val>1);
                                             assigned = 1;
                                         }
                                         if(strcmp($<s_val>1, $<s_val>3) != 0){
                                             if(strcmp($<s_val>1, "none") != 0 && strcmp($<s_val>3, "none") != 0){
-                                                printf("error:%d: invalid operation: MUL_ASSIGN (mismatched types %s and %s)",yylineno,$<s_val>1,$<s_val>3);
+                                                printf("error:%d: invalid operation: MUL_ASSIGN (mismatched types %s and %s)\n",yylineno,$<s_val>1,$<s_val>3);
                                             }
                                         }
                                         printf("MUL_ASSIGN\n"); $$ = $<s_val>1;
                                     }
     | AssignedExpr QUO_ASSIGN Expr  {   if(assigned == 0){
-                                            printf("error:%d: cannot assign to %s",yylineno,$<s_val>1);
+                                            printf("error:%d: cannot assign to %s\n",yylineno,$<s_val>1);
                                             assigned = 1;
                                         }
                                         if(strcmp($<s_val>1, $<s_val>3) != 0){
                                             if(strcmp($<s_val>1, "none") != 0 && strcmp($<s_val>3, "none") != 0){
-                                                printf("error:%d: invalid operation: QUO_ASSIGN (mismatched types %s and %s)",yylineno,$<s_val>1,$<s_val>3);
+                                                printf("error:%d: invalid operation: QUO_ASSIGN (mismatched types %s and %s)\n",yylineno,$<s_val>1,$<s_val>3);
                                             }
                                         }
                                         printf("QUO_ASSIGN\n"); $$ = $<s_val>1;
                                     }
     | AssignedExpr REM_ASSIGN Expr  {   if(assigned == 0){
-                                            printf("error:%d: cannot assign to %s",yylineno,$<s_val>1);
+                                            printf("error:%d: cannot assign to %s\n",yylineno,$<s_val>1);
                                             assigned = 1;
                                         }
                                         if(strcmp($<s_val>1, $<s_val>3) != 0){
                                             if(strcmp($<s_val>1, "none") != 0 && strcmp($<s_val>3, "none") != 0){
-                                                printf("error:%d: invalid operation: REM_ASSIGN (mismatched types %s and %s)",yylineno,$<s_val>1,$<s_val>3);
+                                                printf("error:%d: invalid operation: REM_ASSIGN (mismatched types %s and %s)\n",yylineno,$<s_val>1,$<s_val>3);
                                             }
                                         }
                                         printf("REM_ASSIGN\n"); $$ = $<s_val>1;
@@ -174,9 +174,10 @@ AssignedExpr
 DeclarationStmt
     : Type ID                  {insert_symbol($<s_val>2, $<s_val>1, "-");}
     | Type ID '=' Expr          {insert_symbol($<s_val>2, $<s_val>1, "-");}
-    | Type ID '[' Expr ']'      {insert_symbol($<s_val>2,"array", $<s_val>1);}
-    | Type ID '[' Expr ']' '=' Expr     {insert_symbol($<s_val>2,"array", $<s_val>1);}
+    | Type ID '[' Expr ']'      {insert_symbol($<s_val>2,"array", $<s_val>1);assignAble = 1;}
+    | Type ID '[' Expr ']' '=' Expr     {insert_symbol($<s_val>2,"array", $<s_val>1);assignAble = 1;}
 ;
+
 
 Type
     : TypeName {$$=$1;}
