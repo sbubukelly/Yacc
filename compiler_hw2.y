@@ -328,8 +328,8 @@ If
 
 If_block
     : Block     
-    | ELSE Block
-    | ELSE If
+    | Block ELSE Block
+    | Block ELSE If
 ;
 
 
