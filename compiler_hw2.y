@@ -338,14 +338,14 @@ If_block
                                     printf("error:%d: non-bool (type %s) used as for condition",yylineno + 1,$<s_val>3);
                                 }
                             } Block ElseIf_block
+    | IF '(' Expr ')' {   if(strcmp($<s_val>3, "bool") != 0){
+                                    printf("error:%d: non-bool (type %s) used as for condition",yylineno + 1,$<s_val>3);
+                                }
+                            }NEWLINE Block Else_block
 ;
 
 ElseIf_block
     : ELSE If_block
-    | ELSE IF '(' Expr ')' {   if(strcmp($<s_val>3, "bool") != 0){
-                                    printf("error:%d: non-bool (type %s) used as for condition",yylineno + 1,$<s_val>3);
-                                }
-                            }NEWLINE Block Else_block
 ;
 
 Else_block
