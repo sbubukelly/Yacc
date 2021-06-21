@@ -88,16 +88,15 @@ StatementList
 ;
 
 Statement
-    : DeclarationStmt SEMICOLON  NEWLINE           
-    | Expr SEMICOLON  NEWLINE 
-    | IncDecExpr SEMICOLON  NEWLINE
-    | PrintExpr SEMICOLON NEWLINE 
-    | Assignment SEMICOLON NEWLINE 
-    | Block NEWLINE 
-    | While NEWLINE
-    | If NEWLINE
+    : DeclarationStmt SEMICOLON         
+    | Expr SEMICOLON 
+    | IncDecExpr SEMICOLON 
+    | PrintExpr SEMICOLON 
+    | Assignment SEMICOLON 
+    | Block
+    | While
+    | If 
     | For 
-    | NEWLINE
 ;
 
 Assignment 
@@ -250,10 +249,10 @@ ExprAdd
 ExprMul
     : ExprMul '*' ExprUnary         {printf("MUL\n");assignAble = 0; $$ = $<s_val>1;}
     | ExprMul '/' ExprUnary         {printf("QUO\n");assignAble = 0; $$ = $<s_val>1;}
-    | ExprMul '%' ExprUnary         {   if(strcmp($<s_val>1,"int") != 0){
+    | ExprMul '%' ExprUnary         {   if(strcmp($<s_val>1,"bool") != 0){
                                             printf("error:%d: invalid operation: (operator REM not defined on %s)\n",yylineno,$<s_val>1);
                                         }
-                                        else if(strcmp($<s_val>3,"int") != 0){
+                                        else if(strcmp($<s_val>3,"bool") != 0){
                                             printf("error:%d: invalid operation: (operator REM not defined on %s)\n",yylineno,$<s_val>3);
                                         }
                                         printf("REM\n");assignAble = 0; $$ = $<s_val>1;}
@@ -320,37 +319,17 @@ While
 ;
 
 If
-    : If_block
-    | Else_block
-    | ElseIf_block
+    : IF  '(' Expr ')' {   if(strcmp($<s_val>3, "bool") != 0){
+                                    printf("error:%d: non-bool (type %s) used as for condition",yylineno + 1,$<s_val>3)
+                                } If_block
 ;
 
 If_block
-    : IF  '(' Expr ')' {   if(strcmp($<s_val>3, "bool") != 0){
-                                    printf("error:%d: non-bool (type %s) used as for condition",yylineno + 1,$<s_val>3);
-                                }
-                            } Block
-    | IF  '(' Expr ')' {   if(strcmp($<s_val>3, "bool") != 0){
-                                    printf("error:%d: non-bool (type %s) used as for condition",yylineno + 1,$<s_val>3);
-                                }
-                            } Else_block
-    | IF  '(' Expr ')'{   if(strcmp($<s_val>3, "bool") != 0){
-                                    printf("error:%d: non-bool (type %s) used as for condition",yylineno + 1,$<s_val>3);
-                                }
-                            } Block ElseIf_block
-    | IF '(' Expr ')' {   if(strcmp($<s_val>3, "bool") != 0){
-                                    printf("error:%d: non-bool (type %s) used as for condition",yylineno + 1,$<s_val>3);
-                                }
-                            }NEWLINE Block Else_block
+    : Block     
+    | ELSE Block
+    | ELSE If
 ;
 
-ElseIf_block
-    : ELSE If_block
-;
-
-Else_block
-    : ELSE Block
-;
 
 For
     :FOR '(' ForClause ')' Block
@@ -361,7 +340,7 @@ ForClause
     : Assignment SEMICOLON Expr SEMICOLON IncDecExpr
 
 Block
-    : '{' NEWLINE { create_symbol(); } StatementList '}'        { dump_symbol(); }
+    : '{'{ create_symbol(); } StatementList '}'        { dump_symbol(); }
 ;
 
 %%
