@@ -245,7 +245,7 @@ Primary
 ;
 
 Array
-    : Operand '[' Expr ']'      { $$ = elementType; assignAble = 1 }
+    : Operand '[' Expr ']'      { $$ = elementType; assignAble = 1; }
 ;
 
 ChangeType
