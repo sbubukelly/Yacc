@@ -314,7 +314,7 @@ Literal
 
 While
     : WHILE '(' Expr ')'    {   if(strcmp($<s_val>3, "bool") != 0){
-                                    printf("error:%d: non-bool (type %s) used as for condition",yylineno + 1,$<s_val>3)
+                                    printf("error:%d: non-bool (type %s) used as for condition",yylineno + 1,$<s_val>3);
                                 }
                             } Block      
 ;
@@ -327,15 +327,15 @@ If
 
 If_block
     : IF  '(' Expr ')' {   if(strcmp($<s_val>3, "bool") != 0){
-                                    printf("error:%d: non-bool (type %s) used as for condition",yylineno + 1,$<s_val>3)
+                                    printf("error:%d: non-bool (type %s) used as for condition",yylineno + 1,$<s_val>3);
                                 }
                             } Block
     | IF  '(' Expr ')' {   if(strcmp($<s_val>3, "bool") != 0){
-                                    printf("error:%d: non-bool (type %s) used as for condition",yylineno + 1,$<s_val>3)
+                                    printf("error:%d: non-bool (type %s) used as for condition",yylineno + 1,$<s_val>3);
                                 }
                             }Else_block
     | IF  '(' Expr ')'{   if(strcmp($<s_val>3, "bool") != 0){
-                                    printf("error:%d: non-bool (type %s) used as for condition",yylineno + 1,$<s_val>3)
+                                    printf("error:%d: non-bool (type %s) used as for condition",yylineno + 1,$<s_val>3);
                                 }
                             } Block ElseIf_block
 ;
@@ -343,7 +343,7 @@ If_block
 ElseIf_block
     : ELSE If_block
     | ELSE IF '(' Expr ')' {   if(strcmp($<s_val>3, "bool") != 0){
-                                    printf("error:%d: non-bool (type %s) used as for condition",yylineno + 1,$<s_val>3)
+                                    printf("error:%d: non-bool (type %s) used as for condition",yylineno + 1,$<s_val>3);
                                 }
                             }NEWLINE Block Else_block
 ;
