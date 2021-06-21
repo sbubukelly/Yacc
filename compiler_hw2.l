@@ -69,7 +69,6 @@ newline		[\n]
 "}"         { return '}'; }
 ";"         { return SEMICOLON; }
 ","         { return ','; }
-"\n"        { return NEWLINE;}
 
 "print"     { return PRINT; }
 "if"        { return IF; }
@@ -100,7 +99,6 @@ newline		[\n]
                     yyterminate();
                 }
                 yylineno++;
-                return NEWLINE;
             }
 [ \t]+      {;}
 .           {;}

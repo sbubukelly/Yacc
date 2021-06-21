@@ -55,7 +55,6 @@
 %token INC DEC GEQ LEQ EQL NEQ 
 %token ADD_ASSIGN SUB_ASSIGN MUL_ASSIGN QUO_ASSIGN REM_ASSIGN
 %token AND OR
-%token NEWLINE
 %token PRINT PRINTLN
 %token IF ELSE FOR WHILE
 %token TRUE FALSE
@@ -88,16 +87,15 @@ StatementList
 ;
 
 Statement
-    : DeclarationStmt SEMICOLON NEWLINE    
-    | Expr SEMICOLON  NEWLINE   
-    | IncDecExpr SEMICOLON  NEWLINE   
-    | PrintExpr SEMICOLON  NEWLINE   
-    | Assignment SEMICOLON  NEWLINE   
-    | Block NEWLINE 
-    | While NEWLINE 
-    | If NEWLINE 
+    : DeclarationStmt SEMICOLON     
+    | Expr SEMICOLON     
+    | IncDecExpr SEMICOLON     
+    | PrintExpr SEMICOLON     
+    | Assignment SEMICOLON    
+    | Block  
+    | While  
+    | If  
     | For 
-    | NEWLINE 
 ;
 
 Assignment 
