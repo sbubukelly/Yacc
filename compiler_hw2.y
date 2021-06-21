@@ -102,7 +102,7 @@ Statement
 
 Assignment 
     : AssignedExpr '=' Expr  {  if(assigned == 0){
-                                    printf("error:%d: cannot assign to %s",yylineno,$<s_val>1)
+                                    printf("error:%d: cannot assign to %s",yylineno,$<s_val>1);
                                     assigned = 1;
                                 }
                                 if(strcmp($<s_val>1, $<s_val>3) != 0){
@@ -112,7 +112,7 @@ Assignment
                                 }
                                 printf("ASSIGN\n"); $$ = $<s_val>1;}
     | AssignedExpr ADD_ASSIGN Expr  {   if(assigned == 0){
-                                            printf("error:%d: cannot assign to %s",yylineno,$<s_val>1)
+                                            printf("error:%d: cannot assign to %s",yylineno,$<s_val>1);
                                             assigned = 1;
                                         }
                                         if(strcmp($<s_val>1, $<s_val>3) != 0){
@@ -123,7 +123,7 @@ Assignment
                                         printf("ADD_ASSIGN\n"); $$ = $<s_val>1;
                                     }
     | AssignedExpr SUB_ASSIGN Expr  {   if(assigned == 0){
-                                            printf("error:%d: cannot assign to %s",yylineno,$<s_val>1)
+                                            printf("error:%d: cannot assign to %s",yylineno,$<s_val>1);
                                             assigned = 1;
                                         }
                                         if(strcmp($<s_val>1, $<s_val>3) != 0){
@@ -134,7 +134,7 @@ Assignment
                                         printf("SUB_ASSIGN\n"); $$ = $<s_val>1;
                                     }
     | AssignedExpr MUL_ASSIGN Expr  {   if(assigned == 0){
-                                            printf("error:%d: cannot assign to %s",yylineno,$<s_val>1)
+                                            printf("error:%d: cannot assign to %s",yylineno,$<s_val>1);
                                             assigned = 1;
                                         }
                                         if(strcmp($<s_val>1, $<s_val>3) != 0){
@@ -145,7 +145,7 @@ Assignment
                                         printf("MUL_ASSIGN\n"); $$ = $<s_val>1;
                                     }
     | AssignedExpr QUO_ASSIGN Expr  {   if(assigned == 0){
-                                            printf("error:%d: cannot assign to %s",yylineno,$<s_val>1)
+                                            printf("error:%d: cannot assign to %s",yylineno,$<s_val>1);
                                             assigned = 1;
                                         }
                                         if(strcmp($<s_val>1, $<s_val>3) != 0){
@@ -156,7 +156,7 @@ Assignment
                                         printf("QUO_ASSIGN\n"); $$ = $<s_val>1;
                                     }
     | AssignedExpr REM_ASSIGN Expr  {   if(assigned == 0){
-                                            printf("error:%d: cannot assign to %s",yylineno,$<s_val>1)
+                                            printf("error:%d: cannot assign to %s",yylineno,$<s_val>1);
                                             assigned = 1;
                                         }
                                         if(strcmp($<s_val>1, $<s_val>3) != 0){
