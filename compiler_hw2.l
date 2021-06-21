@@ -98,7 +98,6 @@ newline		[\n]
                 if (once++) {
                     yyterminate();
                 }
-                yylineno++;
             }
 [ \t]+      {;}
 .           {;}
