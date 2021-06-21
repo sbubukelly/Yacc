@@ -314,14 +314,14 @@ Literal
 
 While
     : WHILE '(' Expr ')'    {   if(strcmp($<s_val>3, "bool") != 0){
-                                    printf("error:%d: non-bool (type %s) used as for condition",yylineno + 1,$<s_val>3);
+                                    printf("error:%d: non-bool (type %s) used as for condition\n",yylineno + 1,$<s_val>3);
                                 }
                             } Block      
 ;
 
 If
     : IF  '(' Expr ')' {    if(strcmp($<s_val>3, "bool") != 0){
-                                    printf("error:%d: non-bool (type %s) used as for condition",yylineno + 1,$<s_val>3);
+                                    printf("error:%d: non-bool (type %s) used as for condition\n",yylineno + 1,$<s_val>3);
                             }
                         } If_block
 ;
