@@ -250,10 +250,10 @@ ExprAdd
 ExprMul
     : ExprMul '*' ExprUnary         {printf("MUL\n");assignAble = 0; $$ = $<s_val>1;}
     | ExprMul '/' ExprUnary         {printf("QUO\n");assignAble = 0; $$ = $<s_val>1;}
-    | ExprMul '%' ExprUnary         {   if(strcmp($<s_val>1,"bool") != 0){
+    | ExprMul '%' ExprUnary         {   if(strcmp($<s_val>1,"int") != 0){
                                             printf("error:%d: invalid operation: (operator REM not defined on %s)\n",yylineno,$<s_val>1);
                                         }
-                                        else if(strcmp($<s_val>3,"bool") != 0){
+                                        else if(strcmp($<s_val>3,"int") != 0){
                                             printf("error:%d: invalid operation: (operator REM not defined on %s)\n",yylineno,$<s_val>3);
                                         }
                                         printf("REM\n");assignAble = 0; $$ = $<s_val>1;}
@@ -333,7 +333,7 @@ If_block
     | IF  '(' Expr ')' {   if(strcmp($<s_val>3, "bool") != 0){
                                     printf("error:%d: non-bool (type %s) used as for condition",yylineno + 1,$<s_val>3);
                                 }
-                            }Else_block
+                            } Else_block
     | IF  '(' Expr ')'{   if(strcmp($<s_val>3, "bool") != 0){
                                     printf("error:%d: non-bool (type %s) used as for condition",yylineno + 1,$<s_val>3);
                                 }
