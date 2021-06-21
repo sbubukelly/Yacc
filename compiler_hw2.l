@@ -67,7 +67,7 @@ newline		[\n]
 "]"         { return ']'; }
 "{"         { return '{'; }
 "}"         { return '}'; }
-";"         { return SEMICOLON; }
+[;]         { return SEMICOLON; }
 ","         { return ','; }
 
 "print"     { return PRINT; }
@@ -92,7 +92,7 @@ newline		[\n]
 {id}        { yylval.s_val = strdup(yytext);
                 return ID;
             }
-
+[\n]        {;}
 
 <<EOF>>     { static int once = 0;
                 if (once++) {
