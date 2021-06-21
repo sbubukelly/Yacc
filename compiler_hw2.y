@@ -93,10 +93,11 @@ Statement
     | IncDecExpr SEMICOLON  NEWLINE   
     | PrintExpr SEMICOLON  NEWLINE   
     | Assignment SEMICOLON  NEWLINE   
-    | Block
-    | While
-    | If 
+    | Block NEWLINE 
+    | While NEWLINE 
+    | If NEWLINE 
     | For 
+    | NEWLINE 
 ;
 
 Assignment 
