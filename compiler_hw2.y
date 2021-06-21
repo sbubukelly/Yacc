@@ -88,11 +88,11 @@ StatementList
 ;
 
 Statement
-    : DeclarationStmt SEMICOLON         
-    | Expr SEMICOLON 
-    | IncDecExpr SEMICOLON 
-    | PrintExpr SEMICOLON 
-    | Assignment SEMICOLON 
+    : DeclarationStmt SEMICOLON NEWLINE    
+    | Expr SEMICOLON  NEWLINE   
+    | IncDecExpr SEMICOLON  NEWLINE   
+    | PrintExpr SEMICOLON  NEWLINE   
+    | Assignment SEMICOLON  NEWLINE   
     | Block
     | While
     | If 
